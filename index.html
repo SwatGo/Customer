@@ -188,12 +188,7 @@ p { font-size: 13px; color: var(--text-light); line-height: 1.5; }
   const DEFAULT_SETTINGS = { PLATFORM_FEE: 30, DEFAULT_DELIVERY: 150, RIDER_CUT: 120, COMMISSION_RATE: 10, RATE_PER_KM: 40, RIDER_PER_KM: 30, MIN_DELIVERY_FEE: 50, MAX_DELIVERY_FEE: 500, featuredMerchants: [] };
   const DEFAULT_CENTER = { lat: 34.7717, lng: 72.3600 };
 
-  const DEMO_SHOPS = [
-    { id: 1, name: "Al-Madina Superstore", category: "Supermarket", rating: 4.5, time: "20-30 min", distance: "1.2 km", emoji: "🛒", featured: true, hours: "8:00 AM - 11:00 PM", banner: "linear-gradient(135deg, #10b981, #047857)", isDemo: true, address: "Mingora Bazar, Swat", location: { lat: 34.7717, lng: 72.3600 }, merchantPhone: "", products: [ { id: 101, name: "Milk 1L", price: 220, desc: "Fresh full cream milk", stock: true }, { id: 102, name: "Eggs (12)", price: 180, desc: "Farm fresh eggs", stock: true }, { id: 103, name: "Bread", price: 120, desc: "Whole wheat bread", stock: true } ] },
-    { id: 2, name: "KFC Swat", category: "Restaurant", rating: 4.2, time: "30-40 min", distance: "2.5 km", emoji: "🍗", featured: true, hours: "11:00 AM - 1:00 AM", banner: "linear-gradient(135deg, #ef4444, #b91c1c)", isDemo: true, address: "Saidu Sharif Road, Swat", location: { lat: 34.7817, lng: 72.3700 }, merchantPhone: "", products: [ { id: 201, name: "Zinger Burger", price: 550, desc: "Crispy chicken burger", stock: true }, { id: 202, name: "Chicken Pieces (4)", price: 700, desc: "Hot & crispy", stock: true }, { id: 203, name: "Fries Large", price: 250, desc: "Golden fries", stock: true } ] },
-    { id: 3, name: "Green Pharmacy", category: "Pharmacy", rating: 4.7, time: "15-25 min", distance: "0.8 km", emoji: "💊", featured: false, hours: "24 Hours", banner: "linear-gradient(135deg, #3b82f6, #1d4ed8)", isDemo: true, address: "Green Chowk, Mingora", location: { lat: 34.7750, lng: 72.3630 }, merchantPhone: "", products: [ { id: 301, name: "Panadol (10)", price: 50, desc: "Pain relief", stock: true }, { id: 302, name: "Vitamin C", price: 300, desc: "Immunity booster", stock: true } ] }
-  ];
-
+  
   const CATEGORY_META = {
     "Restaurant": { emoji: "🍔", banner: "linear-gradient(135deg, #ef4444, #b91c1c)" },
     "Supermarket": { emoji: "🛒", banner: "linear-gradient(135deg, #10b981, #047857)" },
