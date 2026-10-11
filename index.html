@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#0f172a" />
 <title>SwatGo</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDLf8FDyUoWTFsiMu20azhnscWkiyCDE24&libraries=places"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDLf8FDyUoWTFsiMu20azhnscWkiyCDE24"></script>
 <style>
 :root { --primary: #0f172a; --accent: #f59e0b; --success: #22c55e; --danger: #ef4444; --bg: #f1f5f9; --card: #ffffff; --text: #0f172a; --text-light: #64748b; --border: #e2e8f0; --input-bg: #ffffff; --nav-bg: #ffffff; }
 body.dark { --primary: #0f172a; --bg: #0f172a; --card: #1e293b; --text: #f1f5f9; --text-light: #94a3b8; --border: #334155; --input-bg: #1e293b; --nav-bg: #1e293b; }
@@ -180,7 +180,7 @@ body.dark .dark-toggle { background: var(--accent); }
     cart: JSON.parse(localStorage.getItem("syedgo_cart")) || [],
     orders: JSON.parse(localStorage.getItem("syedgo_orders")) || [],
     favorites: JSON.parse(localStorage.getItem("syedgo_fav")) || [],
-    address: JSON.parse(localStorage.getItem("syedgo_addr")) || { label: "Home", details: "", instructions: "", lat: DEFAULT_CENTER.lat, lng: DEFAULT_CENTER.lng },
+    address: JSON.parse(localStorage.getItem("syedgo_addr")) || { label: "Home", details: "", instructions: "", lat: null, lng: null },
     coupon: JSON.parse(localStorage.getItem("syedgo_coupon")) || null,
     location: localStorage.getItem("syedgo_loc") || "Swat, Pakistan",
     darkMode: localStorage.getItem("syedgo_customer_dark") === "true"
@@ -329,7 +329,6 @@ body.dark .dark-toggle { background: var(--accent); }
     openRiderWhatsApp(o.rider.phone, o.rider.name);
   }
 
-  // CHAT WITH MERCHANT VIA WHATSAPP
   function chatWithMerchant(orderId) {
     const o = state.orders.find(x => x.id === orderId);
     if (!o) return;
@@ -424,7 +423,6 @@ body.dark .dark-toggle { background: var(--accent); }
     const total = Math.max(0, sub + df + pf - disc);
     const orderId = "SW" + Date.now().toString().slice(-6);
 
-    // Collect pickup info from first shop
     const shopNames = [...new Set(state.cart.map(i => i.shopName).filter(Boolean))];
     const firstShop = findShopByName(shopNames[0]);
     const pickup = firstShop ? {
@@ -458,11 +456,7 @@ body.dark .dark-toggle { background: var(--accent); }
     state.orders.unshift(order);
     state.cart = [];
     state.coupon = null;
-    save();
-    updateBadge();
-    closeModal();
-    state.tab = "orders";
-    render();
+    save(); updateBadge(); closeModal(); state.tab = "orders"; render();
     toast("Order placed! #" + orderId);
 
     try { await setDoc(doc(db, "orders", orderId), order); }
@@ -477,8 +471,7 @@ body.dark .dark-toggle { background: var(--accent); }
     if (!confirm("Cancel this order?")) return;
     try {
       await updateDoc(doc(db, "orders", orderId), { status: "Cancelled", cancelledAt: new Date().toISOString(), cancelledBy: "Customer" });
-      o.status = "Cancelled";
-      o.timeline = [...(o.timeline || []), "Cancelled"];
+      o.status = "Cancelled"; o.timeline = [...(o.timeline || []), "Cancelled"];
       saveLocal(); toast("Order cancelled ❌"); render();
     } catch (e) { console.error(e); toast("Failed to cancel"); }
   }
@@ -540,9 +533,7 @@ body.dark .dark-toggle { background: var(--accent); }
     const shopName = (o.items || [])[0]?.shopName || "";
     const riderPhone = o.rider?.phone || "";
     const riderName = o.rider?.name || "";
-    window._currentRatingOrder = o;
-    window._storeRating = 0;
-    window._riderRating = 0;
+    window._storeRating = 0; window._riderRating = 0;
     document.getElementById("modalRoot").innerHTML = `<div class="overlay" onclick="if(event.target===this)closeModal()"><div class="sheet"><h3>⭐ Rate Your Order</h3>
       <p style="font-size:13px;color:var(--text-light);margin-bottom:16px;">Order #${o.id}</p>
       <div style="text-align:center;margin-bottom:8px;font-weight:600;">${shopName || "Store"}</div>
@@ -590,24 +581,33 @@ body.dark .dark-toggle { background: var(--accent); }
     });
   }
 
-  // LOCATION
+  // LOCATION (Text-first approach)
   let pickerMap = null, pickerMarker = null;
 
   function openLocationModal() {
     document.getElementById("modalRoot").innerHTML = `<div class="overlay" onclick="if(event.target===this)closeModal()"><div class="sheet"><h3>📍 Delivery Address</h3>
-      <button class="add-btn" onclick="goToMyLocation()" style="width:100%;margin-bottom:12px;background:#dbeafe;color:#1e40af;padding:12px;font-size:13px;">📍 Use My Current Location</button>
-      <div id="pickerMap" style="width:100%;height:260px;border-radius:14px;margin-bottom:8px;background:var(--bg);"></div>
-      <p style="font-size:11px;text-align:center;color:var(--text-light);margin-bottom:12px;">🔴 Drag the red pin or tap map to set exact location</p>
+      
+      <label style="display:block;font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px;">Enter your full address *</label>
+      <textarea id="addrDetails" placeholder="e.g. Mingora Bazar, near Bank Alfalah, House 123" rows="3" style="width:100%;padding:12px;border:1px solid var(--border);border-radius:12px;font-size:14px;background:var(--input-bg);color:var(--text);font-family:inherit;resize:none;margin-bottom:12px;">${state.address.details || ''}</textarea>
+
+      <button class="add-btn" onclick="goToMyLocation()" style="width:100%;margin-bottom:12px;background:#dbeafe;color:#1e40af;padding:12px;font-size:13px;">📍 Use My Current Location (Exact GPS)</button>
+
+      <details style="margin-bottom:12px;">
+        <summary style="cursor:pointer;font-size:12px;color:var(--text-light);padding:8px 0;">🎯 Adjust exact location on map (optional)</summary>
+        <div id="pickerMap" style="width:100%;height:220px;border-radius:14px;margin-top:8px;background:var(--bg);"></div>
+        <p style="font-size:11px;text-align:center;color:var(--text-light);margin-top:6px;">Drag pin or tap map for exact GPS location</p>
+      </details>
+
       <div style="display:flex;gap:8px;margin-bottom:12px;">
         <div class="filter-chip ${state.address.label==='Home'?'active':''}" onclick="setAddressLabel('Home')">🏠 Home</div>
         <div class="filter-chip ${state.address.label==='Office'?'active':''}" onclick="setAddressLabel('Office')">🏢 Office</div>
         <div class="filter-chip ${state.address.label==='Other'?'active':''}" onclick="setAddressLabel('Other')">📍 Other</div>
       </div>
-      <label style="display:block;font-size:12px;color:var(--text-light);margin-bottom:4px;">Full Address (type area name if auto-fill fails)</label>
-      <textarea id="addrDetails" placeholder="e.g. Mingora Bazar, near Bank" rows="2" style="width:100%;padding:12px;border:1px solid var(--border);border-radius:12px;font-size:13px;background:var(--input-bg);color:var(--text);font-family:inherit;resize:none;">${state.address.details || ''}</textarea>
-      <label style="display:block;font-size:12px;color:var(--text-light);margin:12px 0 4px;">Delivery Instructions (optional)</label>
+
+      <label style="display:block;font-size:12px;color:var(--text-light);margin-bottom:4px;">Delivery Instructions (optional)</label>
       <input id="addrInstructions" placeholder="Call before arriving, house color..." value="${state.address.instructions || ''}" />
-      <button class="checkout-btn" style="background:var(--primary);" onclick="saveAddress()">Save Address</button>
+
+      <button class="checkout-btn" style="background:var(--primary);margin-top:12px;" onclick="saveAddress()">Save Address</button>
       <button class="add-btn" style="width:100%;margin-top:10px;background:var(--bg);color:var(--text)" onclick="closeModal()">Cancel</button>
     </div></div>`;
     setTimeout(() => initPickerMap(), 150);
@@ -621,23 +621,10 @@ body.dark .dark-toggle { background: var(--accent); }
     google.maps.event.addListener(pickerMarker, 'dragend', () => {
       const pos = pickerMarker.getPosition();
       state.address.lat = pos.lat(); state.address.lng = pos.lng();
-      reverseGeocode(pos.lat(), pos.lng());
     });
     pickerMap.addListener('click', (e) => {
       pickerMarker.setPosition(e.latLng);
       state.address.lat = e.latLng.lat(); state.address.lng = e.latLng.lng();
-      reverseGeocode(e.latLng.lat(), e.latLng.lng());
-    });
-  }
-
-  function looksLikeCoordinates(str) { return /^-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?$/.test((str || '').trim()); }
-
-  function reverseGeocode(lat, lng) {
-    const input = document.getElementById("addrDetails"); if (!input) return;
-    input.value = "Fetching address...";
-    new google.maps.Geocoder().geocode({ location: { lat, lng } }, (results, status) => {
-      if (status === "OK" && results[0] && results[0].formatted_address) input.value = results[0].formatted_address;
-      else { input.value = ""; input.placeholder = "⚠️ Please type area name (e.g. Mingora Bazar)"; input.focus(); }
     });
   }
 
@@ -651,8 +638,14 @@ body.dark .dark-toggle { background: var(--accent); }
       state.address.lat = lat; state.address.lng = lng;
       if (pickerMap) { pickerMap.setCenter({ lat, lng }); pickerMap.setZoom(17); }
       if (pickerMarker) pickerMarker.setPosition({ lat, lng });
-      reverseGeocode(lat, lng);
-      toast("Set ✅");
+      // Reverse geocode to fill the text box
+      new google.maps.Geocoder().geocode({ location: { lat, lng } }, (results, status) => {
+        const input = document.getElementById("addrDetails");
+        if (status === "OK" && results[0] && results[0].formatted_address && input) {
+          input.value = results[0].formatted_address;
+        }
+      });
+      toast("Location detected ✅");
     }, (err) => { alert(err.code === 1 ? "🚫 Permission blocked." : "Error: " + err.message); }, { enableHighAccuracy: true, timeout: 15000 });
   }
 
@@ -661,7 +654,7 @@ body.dark .dark-toggle { background: var(--accent); }
   function saveAddress() {
     const details = document.getElementById('addrDetails').value.trim();
     const instructions = document.getElementById('addrInstructions').value.trim();
-    if (!details || details === "Fetching address..." || looksLikeCoordinates(details)) return toast("Please type your area/address properly");
+    if (!details || details === "Fetching address...") return toast("Please enter your address");
     state.address.details = details;
     state.address.instructions = instructions;
     save(); closeModal(); toast("Saved ✅"); render();
@@ -686,7 +679,7 @@ body.dark .dark-toggle { background: var(--accent); }
         const data = snap.data();
         state.user = data.user || { name: "SwatGo User", phone };
         state.cart = data.cart || []; state.orders = data.orders || [];
-        state.address = data.address || { label: "Home", details: "", instructions: "", lat: DEFAULT_CENTER.lat, lng: DEFAULT_CENTER.lng };
+        state.address = data.address || { label: "Home", details: "", instructions: "", lat: null, lng: null };
         state.favorites = data.favorites || []; state.location = data.location || "Swat, Pakistan";
         saveLocal(); closeModal(); render();
         toast("Welcome back, " + state.user.name + "! 🎉");
@@ -714,7 +707,7 @@ body.dark .dark-toggle { background: var(--accent); }
     if (!confirm("Logout?")) return;
     await removeFcmToken();
     state.user = null; state.cart = []; state.orders = []; state.favorites = [];
-    state.address = { label: "Home", details: "", instructions: "", lat: DEFAULT_CENTER.lat, lng: DEFAULT_CENTER.lng };
+    state.address = { label: "Home", details: "", instructions: "", lat: null, lng: null };
     state.coupon = null;
     localStorage.clear(); state.tab = "home"; render(); toast("Logged out");
   }
