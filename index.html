@@ -3,77 +3,168 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<meta name="theme-color" content="#0f172a" />
+<meta name="theme-color" content="#059669" />
 <title>SwatGo</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDLf8FDyUoWTFsiMu20azhnscWkiyCDE24"></script>
 <style>
-:root { --primary: #0f172a; --accent: #f59e0b; --success: #22c55e; --danger: #ef4444; --bg: #f1f5f9; --card: #ffffff; --text: #0f172a; --text-light: #64748b; --border: #e2e8f0; --input-bg: #ffffff; --nav-bg: #ffffff; }
-body.dark { --primary: #0f172a; --bg: #0f172a; --card: #1e293b; --text: #f1f5f9; --text-light: #94a3b8; --border: #334155; --input-bg: #1e293b; --nav-bg: #1e293b; }
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+/* ============================================
+   SWATGO GLOBAL THEME
+   ============================================ */
+:root {
+  --brand: #059669;
+  --brand-dark: #047857;
+  --brand-light: #D1FAE5;
+  --accent: #F59E0B;
+  --accent-light: #FEF3C7;
+  --success: #10B981;
+  --danger: #EF4444;
+  --info: #3B82F6;
+  --bg: #F8FAFC;
+  --card: #FFFFFF;
+  --text: #0F172A;
+  --text-light: #64748B;
+  --text-soft: #94A3B8;
+  --border: #E2E8F0;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 20px rgba(0,0,0,0.06);
+  --shadow-lg: 0 10px 40px rgba(0,0,0,0.08);
+  --radius: 18px;
+  --radius-sm: 12px;
+  --input-bg: #FFFFFF;
+}
+
+body.dark {
+  --bg: #0F172A;
+  --card: #1E293B;
+  --text: #F1F5F9;
+  --text-light: #94A3B8;
+  --text-soft: #64748B;
+  --border: #334155;
+  --input-bg: #1E293B;
+  --brand-light: rgba(5, 150, 105, 0.2);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
 body { background: var(--bg); display: flex; justify-content: center; min-height: 100vh; color: var(--text); transition: background 0.3s; }
-.app { width: 100%; max-width: 480px; background: var(--bg); min-height: 100vh; position: relative; padding-bottom: 75px; overflow-x: hidden; }
-#splash { position: fixed; inset: 0; background: var(--primary); color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; transition: opacity 0.5s; }
-#splash h1 { font-size: 36px; letter-spacing: 3px; margin-bottom: 10px; }
-#splash p { color: #94a3b8; font-size: 14px; }
-#splash .loader { width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.1); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; margin-top: 20px; }
+.app { width: 100%; max-width: 480px; background: var(--bg); min-height: 100vh; position: relative; padding-bottom: 88px; overflow-x: hidden; }
+
+/* ============================================
+   SPLASH
+   ============================================ */
+#splash { position: fixed; inset: 0; background: linear-gradient(135deg, #059669, #047857); color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; transition: opacity 0.5s; }
+#splash h1 { font-size: 38px; letter-spacing: -1px; font-weight: 800; margin-bottom: 6px; animation: splashIn 0.6s ease; }
+#splash p { color: rgba(255,255,255,0.85); font-size: 14px; font-weight: 500; animation: splashIn 0.8s ease; }
+#splash .loader { width: 32px; height: 32px; border: 3px solid rgba(255,255,255,0.25); border-top-color: #fff; border-radius: 50%; animation: spin 0.8s linear infinite; margin-top: 28px; }
 @keyframes spin { to { transform: rotate(360deg); } }
-.topbar { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; background: var(--primary); color: #fff; position: sticky; top: 0; z-index: 10; }
-.topbar .loc { font-size: 12px; opacity: 0.85; cursor: pointer; display: flex; align-items: center; gap: 4px; }
-.topbar h1 { font-size: 20px; letter-spacing: 1px; }
-.icon-btn { background: rgba(255,255,255,0.12); border: none; color: #fff; font-size: 18px; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-main { padding: 16px; }
-h2 { font-size: 18px; margin-bottom: 12px; color: var(--text); font-weight: 600; }
-h3 { font-size: 16px; color: var(--text); }
-p { font-size: 13px; color: var(--text-light); }
-.card { background: var(--card); border-radius: 16px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); position: relative; overflow: hidden; border: 1px solid var(--border); }
+@keyframes splashIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ============================================
+   HEADER
+   ============================================ */
+.topbar { padding: 18px 20px 16px; background: linear-gradient(135deg, #059669 0%, #047857 100%); color: #fff; position: sticky; top: 0; z-index: 10; overflow: hidden; }
+.topbar::after { content: ''; position: absolute; top: -60px; right: -60px; width: 160px; height: 160px; background: rgba(255,255,255,0.08); border-radius: 50%; pointer-events: none; }
+.topbar::before { content: ''; position: absolute; bottom: -40px; left: -40px; width: 120px; height: 120px; background: rgba(255,255,255,0.06); border-radius: 50%; pointer-events: none; }
+.topbar-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; position: relative; z-index: 2; }
+.topbar .loc { font-size: 12px; font-weight: 500; opacity: 0.95; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+.topbar h1 { font-size: 24px; font-weight: 800; letter-spacing: -0.8px; position: relative; z-index: 2; }
+.icon-btn { background: rgba(255,255,255,0.15); border: none; color: #fff; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; position: relative; z-index: 2; }
+.icon-btn:active { transform: scale(0.92); background: rgba(255,255,255,0.25); }
+
+main { padding: 18px 16px; }
+
+h2 { font-size: 17px; margin-bottom: 12px; color: var(--text); font-weight: 800; letter-spacing: -0.3px; display: flex; align-items: center; gap: 6px; }
+h3 { font-size: 15px; color: var(--text); font-weight: 700; }
+p { font-size: 13px; color: var(--text-light); line-height: 1.5; }
+
+/* ============================================
+   CARDS
+   ============================================ */
+.card { background: var(--card); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; box-shadow: var(--shadow-md); position: relative; overflow: hidden; border: 1px solid rgba(226,232,240,0.5); transition: transform 0.2s ease, box-shadow 0.2s ease; animation: cardIn 0.4s ease backwards; }
+.card:active { transform: scale(0.99); }
+@keyframes cardIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
 .shop-header { display: flex; gap: 12px; align-items: center; cursor: pointer; }
-.shop-img { width: 60px; height: 60px; border-radius: 14px; background: var(--bg); display: flex; align-items: center; justify-content: center; font-size: 28px; flex-shrink: 0; border: 1px solid var(--border); }
-.shop-info h3 { font-size: 15px; color: var(--text); margin-bottom: 2px; }
-.shop-info p { font-size: 12px; color: var(--text-light); }
+.shop-img { width: 56px; height: 56px; border-radius: 14px; background: linear-gradient(135deg, #D1FAE5, #A7F3D0); display: flex; align-items: center; justify-content: center; font-size: 26px; flex-shrink: 0; border: 1px solid rgba(226,232,240,0.5); }
+.shop-info h3 { font-size: 15px; color: var(--text); margin-bottom: 3px; font-weight: 700; letter-spacing: -0.2px; }
+.shop-info p { font-size: 12px; color: var(--text-light); font-weight: 500; }
+
+/* ============================================
+   PRODUCT ROWS
+   ============================================ */
 .product-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
 .product-row:last-child { border-bottom: none; }
 .product-info { flex: 1; cursor: pointer; }
-.product-info h4 { font-size: 14px; color: var(--text); font-weight: 500; }
-.product-info p { font-size: 13px; color: var(--text-light); margin-top: 4px; font-weight: 600; }
-.add-btn { background: var(--primary); color: #fff; border: none; border-radius: 8px; padding: 8px 16px; font-size: 12px; font-weight: 600; cursor: pointer; }
-body.dark .add-btn { background: var(--accent); }
+.product-info h4 { font-size: 14px; color: var(--text); font-weight: 600; margin-bottom: 3px; }
+.product-info p { font-size: 13px; color: var(--brand); font-weight: 800; }
+.add-btn { background: linear-gradient(135deg, #059669, #047857); color: #fff; border: none; border-radius: 10px; padding: 8px 16px; font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.15s; box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25); }
+.add-btn:active { transform: scale(0.94); box-shadow: 0 2px 6px rgba(5, 150, 105, 0.2); }
+body.dark .add-btn { box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3); }
+
 .qty-box { display: flex; align-items: center; gap: 10px; }
-.qty-box button { background: var(--primary); color: #fff; border: none; border-radius: 8px; width: 30px; height: 30px; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-body.dark .qty-box button { background: var(--accent); }
-.qty-box span { font-size: 14px; font-weight: bold; min-width: 20px; text-align: center; }
-.bottom-nav { position: fixed; bottom: 0; width: 100%; max-width: 480px; display: flex; justify-content: space-around; background: var(--nav-bg); border-top: 1px solid var(--border); padding: 10px 0; z-index: 100; }
-.bottom-nav button { background: none; border: none; display: flex; flex-direction: column; align-items: center; font-size: 20px; color: #94a3b8; cursor: pointer; position: relative; flex: 1; padding: 4px; }
-.bottom-nav button span.lbl { font-size: 10px; margin-top: 4px; font-weight: 500; }
-.bottom-nav button.active { color: var(--primary); font-weight: 700; }
-body.dark .bottom-nav button.active { color: var(--accent); }
-.badge { position: absolute; top: -2px; right: 22%; background: var(--danger); color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 10px; font-weight: bold; border: 2px solid var(--card); }
+.qty-box button { background: var(--brand); color: #fff; border: none; border-radius: 8px; width: 30px; height: 30px; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.15s; }
+.qty-box button:active { transform: scale(0.9); }
+.qty-box span { font-size: 14px; font-weight: 800; min-width: 20px; text-align: center; font-feature-settings: 'tnum'; }
+
+/* ============================================
+   BOTTOM NAV
+   ============================================ */
+.bottom-nav { position: fixed; bottom: 0; width: 100%; max-width: 480px; display: flex; justify-content: space-around; background: var(--card); border-top: 1px solid var(--border); padding: 8px 0 12px; z-index: 100; box-shadow: 0 -4px 20px rgba(0,0,0,0.04); }
+.bottom-nav button { background: none; border: none; display: flex; flex-direction: column; align-items: center; font-size: 10px; font-weight: 600; color: var(--text-soft); cursor: pointer; position: relative; flex: 1; padding: 4px; gap: 3px; transition: color 0.2s; }
+.bottom-nav button svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; transition: all 0.2s; }
+.bottom-nav button.active { color: var(--brand); }
+.bottom-nav button.active svg { stroke-width: 2.5; }
+.bottom-nav button.active::before { content: ''; position: absolute; top: -1px; left: 50%; transform: translateX(-50%); width: 32px; height: 32px; background: var(--brand-light); border-radius: 12px; z-index: -1; }
+
+.badge { position: absolute; top: 0px; right: 24%; background: var(--danger); color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 10px; font-weight: 800; border: 2px solid var(--card); font-feature-settings: 'tnum'; }
+
 .hidden { display: none !important; }
-.categories { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 12px; margin-bottom: 8px; scrollbar-width: none; }
+
+/* ============================================
+   CATEGORIES
+   ============================================ */
+.categories { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 12px; margin-bottom: 8px; scrollbar-width: none; }
 .categories::-webkit-scrollbar { display: none; }
-.cat { flex-shrink: 0; background: var(--card); border-radius: 14px; padding: 12px 16px; font-size: 12px; text-align: center; cursor: pointer; border: 2px solid transparent; min-width: 80px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); color: var(--text); }
-.cat.active { border-color: var(--primary); background: var(--bg); }
-body.dark .cat.active { border-color: var(--accent); }
-.cat .em { font-size: 24px; display: block; margin-bottom: 6px; }
-.featured-tag { position: absolute; top: 0; right: 0; background: var(--accent); color: #fff; font-size: 10px; font-weight: bold; padding: 4px 10px; border-radius: 0 16px 0 10px; }
-.new-tag { background: var(--success); }
-.search-input { width: 100%; padding: 14px 16px; border: 1px solid var(--border); border-radius: 14px; font-size: 14px; margin-bottom: 14px; outline: none; background: var(--input-bg); color: var(--text); }
+.cat { flex-shrink: 0; background: var(--card); border-radius: 16px; padding: 10px 16px; font-size: 11px; font-weight: 700; text-align: center; cursor: pointer; border: 2px solid transparent; min-width: 70px; box-shadow: var(--shadow-sm); color: var(--text); transition: all 0.2s; }
+.cat.active { background: linear-gradient(135deg, #059669, #047857); color: #fff; border-color: var(--brand); box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25); }
+.cat .em { font-size: 22px; display: block; margin-bottom: 4px; }
+
+.featured-tag { position: absolute; top: 12px; right: 12px; background: linear-gradient(135deg, #F59E0B, #D97706); color: #fff; font-size: 9px; font-weight: 800; padding: 4px 10px; border-radius: 20px; letter-spacing: 0.5px; box-shadow: 0 4px 12px rgba(245,158,11,0.3); }
+
+.search-input { width: 100%; padding: 14px 16px; border: 1px solid var(--border); border-radius: 14px; font-size: 14px; margin-bottom: 14px; outline: none; background: var(--input-bg); color: var(--text); font-weight: 500; transition: all 0.2s; }
+.search-input:focus { border-color: var(--brand); box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.1); }
+
 .filter-chips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 12px; margin-bottom: 8px; scrollbar-width: none; }
-.filter-chip { flex-shrink: 0; background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 6px 14px; font-size: 12px; cursor: pointer; color: var(--text-light); }
-.filter-chip.active { background: var(--primary); color: #fff; border-color: var(--primary); }
-body.dark .filter-chip.active { background: var(--accent); border-color: var(--accent); }
-.overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: flex-end; justify-content: center; }
-.sheet { background: var(--card); width: 100%; max-width: 480px; border-radius: 24px 24px 0 0; padding: 24px; max-height: 92vh; overflow-y: auto; color: var(--text); }
-.sheet h3 { margin-bottom: 16px; font-size: 20px; }
-.sheet input, .sheet select, .sheet textarea { width: 100%; padding: 14px; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 12px; font-size: 14px; outline: none; font-family: inherit; background: var(--input-bg); color: var(--text); }
-.pay-opt { display: flex; align-items: center; gap: 12px; padding: 14px; border: 2px solid var(--border); border-radius: 14px; margin-bottom: 10px; cursor: pointer; }
-.pay-opt.active { border-color: var(--primary); background: var(--bg); }
-body.dark .pay-opt.active { border-color: var(--accent); }
+.filter-chip { flex-shrink: 0; background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 7px 14px; font-size: 12px; font-weight: 600; cursor: pointer; color: var(--text-light); transition: all 0.15s; }
+.filter-chip.active { background: linear-gradient(135deg, #059669, #047857); color: #fff; border-color: var(--brand); }
+.filter-chip:active { transform: scale(0.95); }
+
+/* ============================================
+   BOTTOM SHEET (with drag handle)
+   ============================================ */
+.overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5); z-index: 1000; display: flex; align-items: flex-end; justify-content: center; animation: fadeIn 0.2s; backdrop-filter: blur(4px); }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.sheet { background: var(--card); width: 100%; max-width: 480px; border-radius: 28px 28px 0 0; padding: 8px 24px 24px; max-height: 92vh; overflow-y: auto; color: var(--text); animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1); position: relative; }
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.sheet::before { content: ''; display: block; width: 40px; height: 4px; background: #CBD5E1; border-radius: 2px; margin: 8px auto 16px; }
+.sheet h3 { margin-bottom: 16px; font-size: 20px; font-weight: 800; letter-spacing: -0.4px; }
+.sheet input, .sheet select, .sheet textarea { width: 100%; padding: 14px; border: 1px solid var(--border); border-radius: 14px; margin-bottom: 12px; font-size: 14px; outline: none; font-family: inherit; background: var(--input-bg); color: var(--text); font-weight: 500; transition: all 0.2s; }
+.sheet input:focus, .sheet textarea:focus { border-color: var(--brand); box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.1); }
+
+.pay-opt { display: flex; align-items: center; gap: 12px; padding: 14px; border: 2px solid var(--border); border-radius: 14px; margin-bottom: 10px; cursor: pointer; transition: all 0.2s; }
+.pay-opt.active { border-color: var(--brand); background: var(--brand-light); }
 .pay-opt input { width: auto; margin: 0; }
-.pay-opt .pay-icon { font-size: 24px; }
-.fee-breakdown { background: var(--bg); border-radius: 14px; padding: 16px; margin-top: 16px; font-size: 14px; border: 1px solid var(--border); }
-.fee-row { display: flex; justify-content: space-between; margin-bottom: 8px; color: var(--text-light); }
-.fee-row.total { font-weight: 700; color: var(--text); font-size: 16px; border-top: 2px dashed var(--border); padding-top: 12px; margin-top: 12px; }
+.pay-opt .pay-icon { font-size: 22px; }
+
+.fee-breakdown { background: var(--bg); border-radius: 14px; padding: 16px; margin-top: 16px; font-size: 13px; border: 1px solid var(--border); }
+.fee-row { display: flex; justify-content: space-between; margin-bottom: 8px; color: var(--text-light); font-weight: 500; }
+.fee-row span:last-child { color: var(--text); font-weight: 700; font-feature-settings: 'tnum'; }
+.fee-row.total { font-weight: 800; color: var(--text); font-size: 16px; border-top: 2px dashed var(--border); padding-top: 12px; margin-top: 12px; }
+.fee-row.total span:last-child { color: var(--brand); }
+
+/* ============================================
+   TIMELINE
+   ============================================ */
 .timeline { position: relative; padding-left: 30px; margin-top: 16px; }
 .timeline::before { content: ''; position: absolute; left: 9px; top: 5px; bottom: 5px; width: 2px; background: var(--border); }
 .timeline-step { position: relative; margin-bottom: 24px; }
@@ -83,59 +174,116 @@ body.dark .pay-opt.active { border-color: var(--accent); }
 .timeline-step.active::before { background: var(--accent); animation: pulse 1.5s infinite; }
 .timeline-step.cancelled::before { background: var(--danger); }
 @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(245,158,11,0.4); } 70% { box-shadow: 0 0 0 10px rgba(245,158,11,0); } 100% { box-shadow: 0 0 0 0 rgba(245,158,11,0); } }
-.timeline-step h4 { font-size: 14px; color: var(--text); font-weight: 600; }
-.timeline-step p { font-size: 12px; color: var(--text-light); margin-top: 2px; }
-#liveTrackingMap { width: 100%; height: 320px; border-radius: 16px; margin-bottom: 16px; border: 1px solid var(--border); background: var(--bg); }
-.toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: var(--primary); color: #fff; padding: 12px 24px; border-radius: 30px; font-size: 13px; z-index: 9999; opacity: 0; transition: opacity 0.3s, transform 0.3s; pointer-events: none; max-width: 90%; text-align: center; }
-.toast.show { opacity: 1; transform: translateX(-50%) translateY(-10px); }
-.empty { text-align: center; color: var(--text-light); padding: 60px 0; font-size: 14px; }
-.empty .big { font-size: 56px; display: block; margin-bottom: 16px; }
-.status-chip { font-size: 11px; padding: 4px 10px; border-radius: 20px; background: #dcfce7; color: #166534; font-weight: 600; }
-.status-chip.pending { background: #fef3c7; color: #92400e; }
-.status-chip.delivered { background: #dcfce7; color: #166534; }
-.status-chip.assigned { background: #dbeafe; color: #1e40af; }
-.status-chip.cancelled { background: #fee2e2; color: #991b1b; }
-.checkout-btn { width: 100%; background: var(--success); color: #fff; border: none; padding: 15px; border-radius: 12px; font-size: 16px; font-weight: bold; margin-top: 16px; cursor: pointer; }
-.rider-contact-box { background: #f0fdf4; border-radius: 14px; padding: 14px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
-body.dark .rider-contact-box { background: rgba(34,197,94,0.15); }
+.timeline-step h4 { font-size: 14px; color: var(--text); font-weight: 700; }
+.timeline-step p { font-size: 12px; color: var(--text-light); margin-top: 2px; font-weight: 500; }
+
+#liveTrackingMap { width: 100%; height: 320px; border-radius: var(--radius); margin-bottom: 16px; border: 1px solid var(--border); background: var(--bg); }
+
+/* ============================================
+   TOAST (Colored with icon)
+   ============================================ */
+.toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px); padding: 14px 22px; border-radius: 14px; font-size: 13px; font-weight: 700; z-index: 9999; opacity: 0; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); pointer-events: none; max-width: 90%; display: flex; align-items: center; gap: 10px; box-shadow: 0 8px 24px rgba(0,0,0,0.15); color: #fff; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast::before { content: '✓'; display: inline-flex; width: 22px; height: 22px; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; border-radius: 50%; background: rgba(255,255,255,0.25); flex-shrink: 0; }
+.toast { background: linear-gradient(135deg, #059669, #047857); }
+.toast.error { background: linear-gradient(135deg, #EF4444, #DC2626); }
+.toast.error::before { content: '!'; }
+.toast.info { background: linear-gradient(135deg, #3B82F6, #2563EB); }
+.toast.info::before { content: 'i'; font-family: serif; }
+.toast.warning { background: linear-gradient(135deg, #F59E0B, #D97706); }
+.toast.warning::before { content: '⚠'; font-size: 11px; }
+
+/* ============================================
+   EMPTY STATE
+   ============================================ */
+.empty { text-align: center; color: var(--text-light); padding: 50px 20px; font-size: 14px; font-weight: 500; animation: cardIn 0.5s ease; }
+.empty svg { width: 140px; height: 140px; margin: 0 auto 16px; display: block; opacity: 0.9; }
+.empty h3 { font-size: 17px; color: var(--text); font-weight: 800; margin-bottom: 6px; letter-spacing: -0.3px; }
+.empty p { font-size: 13px; line-height: 1.5; max-width: 260px; margin: 0 auto 18px; }
+
+/* ============================================
+   SKELETON LOADER
+   ============================================ */
+.skeleton { background: linear-gradient(90deg, var(--border) 25%, rgba(226,232,240,0.4) 50%, var(--border) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 8px; }
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+.skeleton-card { background: var(--card); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; display: flex; gap: 12px; box-shadow: var(--shadow-sm); }
+.skeleton-circle { width: 56px; height: 56px; border-radius: 14px; flex-shrink: 0; }
+.skeleton-lines { flex: 1; display: flex; flex-direction: column; gap: 10px; justify-content: center; }
+.skeleton-line { height: 12px; }
+.skeleton-line.short { width: 60%; }
+
+/* ============================================
+   STATUS CHIPS
+   ============================================ */
+.status-chip { font-size: 10px; padding: 5px 12px; border-radius: 20px; background: var(--brand-light); color: var(--brand-dark); font-weight: 800; letter-spacing: 0.3px; text-transform: uppercase; }
+.status-chip.pending { background: #FEF3C7; color: #92400E; }
+.status-chip.delivered { background: #D1FAE5; color: #166534; }
+.status-chip.assigned { background: #DBEAFE; color: #1E40AF; }
+.status-chip.cancelled { background: #FEE2E2; color: #991B1B; }
+
+/* ============================================
+   CHECKOUT BUTTON
+   ============================================ */
+.checkout-btn { width: 100%; background: linear-gradient(135deg, #059669, #047857); color: #fff; border: none; padding: 16px; border-radius: 14px; font-size: 15px; font-weight: 800; margin-top: 16px; cursor: pointer; letter-spacing: 0.2px; box-shadow: 0 6px 20px rgba(5, 150, 105, 0.3); transition: all 0.15s; }
+.checkout-btn:active { transform: scale(0.98); box-shadow: 0 3px 12px rgba(5, 150, 105, 0.25); }
+
+/* ============================================
+   RIDER CONTACT
+   ============================================ */
+.rider-contact-box { background: var(--brand-light); border-radius: 14px; padding: 14px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; gap: 10px; border: 1px solid rgba(5, 150, 105, 0.15); }
 .rider-contact-box .info { flex: 1; min-width: 0; }
-.rider-contact-box .info b { display: block; font-size: 14px; margin-bottom: 2px; color: var(--text); }
-.rider-contact-box .info span { font-size: 12px; color: var(--text-light); }
+.rider-contact-box .info b { display: block; font-size: 14px; margin-bottom: 2px; color: var(--text); font-weight: 700; }
+.rider-contact-box .info span { font-size: 12px; color: var(--text-light); font-weight: 500; }
 .rider-contact-box .actions { display: flex; gap: 8px; flex-shrink: 0; }
-.icon-action { width: 42px; height: 42px; border-radius: 50%; border: none; color: #fff; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
-.icon-action.call { background: #22c55e; }
-.icon-action.wa { background: #25D366; }
-.dark-toggle { position: fixed; top: 65px; right: 16px; z-index: 50; width: 40px; height: 40px; border-radius: 50%; background: var(--primary); color: #fff; border: none; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(15,23,42,0.3); }
-body.dark .dark-toggle { background: var(--accent); }
+.icon-action { width: 42px; height: 42px; border-radius: 50%; border: none; color: #fff; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 10px rgba(0,0,0,0.15); transition: transform 0.15s; }
+.icon-action:active { transform: scale(0.9); }
+.icon-action.call { background: linear-gradient(135deg, #22c55e, #16a34a); }
+.icon-action.wa { background: linear-gradient(135deg, #25D366, #128C7E); }
+
+/* ============================================
+   DARK MODE TOGGLE
+   ============================================ */
+.dark-toggle { position: fixed; top: 72px; right: 16px; z-index: 50; width: 42px; height: 42px; border-radius: 50%; background: var(--card); color: var(--text); border: 1px solid var(--border); cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-md); transition: all 0.2s; }
+.dark-toggle:active { transform: scale(0.9); }
+
+/* ============================================
+   STARS
+   ============================================ */
 .stars { display: flex; gap: 6px; justify-content: center; margin: 8px 0; }
-.star { font-size: 32px; color: #d1d5db; cursor: pointer; transition: color 0.15s; user-select: none; }
-.star.active { color: var(--accent); }
+.star { font-size: 32px; color: #D1D5DB; cursor: pointer; transition: all 0.15s; user-select: none; }
+.star.active { color: var(--accent); transform: scale(1.05); }
+
+/* ============================================
+   REVIEWS
+   ============================================ */
 .review-item { padding: 12px 0; border-bottom: 1px solid var(--border); }
 .review-item:last-child { border-bottom: none; }
 .review-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
 .review-stars { color: var(--accent); font-size: 14px; }
-.review-text { font-size: 13px; color: var(--text); margin-top: 4px; }
-.review-meta { font-size: 11px; color: var(--text-light); margin-top: 4px; }
+.review-text { font-size: 13px; color: var(--text); margin-top: 4px; line-height: 1.5; }
+.review-meta { font-size: 11px; color: var(--text-light); margin-top: 4px; font-weight: 500; }
 </style>
 </head>
 <body>
 <div id="splash"><h1>SwatGo</h1><p>Delivering happiness to Swat</p><div class="loader"></div></div>
 <div class="app">
   <header class="topbar">
-    <div>
+    <div class="topbar-top">
       <div class="loc" onclick="openLocationModal()">📍 <span id="locLabel">Swat, Pakistan</span></div>
-      <h1>SwatGo</h1>
+      <button class="icon-btn" onclick="toast('No new notifications', 'info')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+      </button>
     </div>
-    <button class="icon-btn" onclick="toast('No new notifications')">🔔</button>
+    <h1>SwatGo</h1>
   </header>
   <button class="dark-toggle" onclick="toggleDarkMode()" id="darkToggle">🌙</button>
   <main id="app"></main>
   <nav class="bottom-nav">
-    <button data-tab="home" class="active">🏠<span class="lbl">Home</span></button>
-    <button data-tab="search">🔍<span class="lbl">Search</span></button>
-    <button data-tab="cart">🛒<span class="lbl">Cart</span><span id="cartBadge" class="badge hidden">0</span></button>
-    <button data-tab="orders">📦<span class="lbl">Orders</span></button>
-    <button data-tab="profile">👤<span class="lbl">Profile</span></button>
+    <button data-tab="home" class="active"><svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home</button>
+    <button data-tab="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>Search</button>
+    <button data-tab="cart"><svg viewBox="0 0 24 24"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>Cart<span id="cartBadge" class="badge hidden">0</span></button>
+    <button data-tab="orders"><svg viewBox="0 0 24 24"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>Orders</button>
+    <button data-tab="profile"><svg viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profile</button>
   </nav>
 </div>
 <div id="toast" class="toast"></div>
@@ -174,7 +322,7 @@ body.dark .dark-toggle { background: var(--accent); }
 
   let state = {
     tab: "home", category: "all", searchQuery: "", searchFilter: "all", currentShop: null,
-    firebaseShops: [],
+    firebaseShops: [], isLoading: true,
     settings: { ...DEFAULT_SETTINGS },
     user: JSON.parse(localStorage.getItem("syedgo_user")) || null,
     cart: JSON.parse(localStorage.getItem("syedgo_cart")) || [],
@@ -190,18 +338,13 @@ body.dark .dark-toggle { background: var(--accent); }
   let riderLocationListener = null, orderStatusListener = null;
   let merchantsListener = null, settingsListener = null;
 
-  function phoneToShopId(phone) {
-    let hash = 0; const str = String(phone || "");
-    for (let i = 0; i < str.length; i++) { hash = ((hash << 5) - hash) + str.charCodeAt(i); hash = hash & hash; }
-    return Math.abs(hash) % 100000000;
-  }
+  function phoneToShopId(phone) { let hash = 0; const str = String(phone || ""); for (let i = 0; i < str.length; i++) { hash = ((hash << 5) - hash) + str.charCodeAt(i); hash = hash & hash; } return Math.abs(hash) % 100000000; }
 
   function merchantToShop(docId, data) {
     const m = data.merchant || data;
     const meta = CATEGORY_META[m.category] || CATEGORY_META["Other"];
     const products = (data.products || []).map(p => ({ id: p.id, name: p.name, price: p.price, desc: p.desc || "", stock: p.stock !== false, category: p.category || "General" }));
-    const featuredList = state.settings.featuredMerchants || [];
-    const isFeatured = featuredList.includes(m.phone || docId);
+    const isFeatured = (state.settings.featuredMerchants || []).includes(m.phone || docId);
     return { id: phoneToShopId(m.phone || docId), name: m.storeName || "Store", category: m.category || "Other", rating: 5.0, time: "20-30 min", distance: "Nearby", emoji: meta.emoji, banner: meta.banner, featured: isFeatured, isNew: true, isDemo: false, hours: m.hours || "Open", address: m.address || "", location: m.location || null, deliveryArea: m.deliveryArea || "", merchantPhone: m.phone || docId, products };
   }
 
@@ -213,13 +356,11 @@ body.dark .dark-toggle { background: var(--accent); }
     if (merchantsListener) merchantsListener();
     merchantsListener = onSnapshot(collection(db, "merchants"), (snapshot) => {
       const shops = [];
-      snapshot.forEach((docSnap) => {
-        const data = docSnap.data();
-        if (data.merchant || data.storeName) shops.push(merchantToShop(docSnap.id, data));
-      });
+      snapshot.forEach((docSnap) => { const data = docSnap.data(); if (data.merchant || data.storeName) shops.push(merchantToShop(docSnap.id, data)); });
       state.firebaseShops = shops;
+      state.isLoading = false;
       if (state.tab === "home" || state.tab === "search" || state.currentShop) render();
-    }, (err) => { console.error("Merchants error:", err); });
+    }, (err) => { console.error("Merchants error:", err); state.isLoading = false; render(); });
   }
 
   function loadSettings() {
@@ -233,82 +374,29 @@ body.dark .dark-toggle { background: var(--accent); }
     }, (err) => { console.error("Settings error:", err); });
   }
 
-  // FCM
-  async function requestFcmToken() {
-    if (!window.FcmBridge) return;
-    window.onFcmTokenReceived = async function(token) {
-      if (!token) return;
-      localStorage.setItem('swatgo_fcm_token', token);
-      await saveFcmTokenToFirestore(token);
-    };
-    window.FcmBridge.postMessage('getFcmToken');
-  }
+  async function requestFcmToken() { if (!window.FcmBridge) return; window.onFcmTokenReceived = async function(token) { if (!token) return; localStorage.setItem('swatgo_fcm_token', token); await saveFcmTokenToFirestore(token); }; window.FcmBridge.postMessage('getFcmToken'); }
+  async function saveFcmTokenToFirestore(token) { if (!state.user) return; try { const phoneKey = state.user.phone.replace(/[^0-9]/g, ''); await setDoc(doc(db, 'device_tokens', 'customer_' + phoneKey), { token, userType: 'customer', userId: state.user.phone, userName: state.user.name, updatedAt: new Date().toISOString(), platform: 'android' }, { merge: true }); } catch (e) { console.error(e); } }
+  async function removeFcmToken() { if (!state.user) return; try { const phoneKey = state.user.phone.replace(/[^0-9]/g, ''); await deleteDoc(doc(db, 'device_tokens', 'customer_' + phoneKey)); } catch (e) { console.error(e); } }
 
-  async function saveFcmTokenToFirestore(token) {
-    if (!state.user) return;
-    try {
-      const phoneKey = state.user.phone.replace(/[^0-9]/g, '');
-      await setDoc(doc(db, 'device_tokens', 'customer_' + phoneKey), {
-        token: token, userType: 'customer', userId: state.user.phone, userName: state.user.name,
-        updatedAt: new Date().toISOString(), platform: 'android'
-      }, { merge: true });
-    } catch (e) { console.error('FCM: Save failed:', e); }
-  }
+  function toggleDarkMode() { state.darkMode = !state.darkMode; localStorage.setItem("syedgo_customer_dark", state.darkMode); applyDarkMode(); }
+  function applyDarkMode() { if (state.darkMode) { document.body.classList.add("dark"); document.getElementById("darkToggle").textContent = "☀️"; } else { document.body.classList.remove("dark"); document.getElementById("darkToggle").textContent = "🌙"; } }
 
-  async function removeFcmToken() {
-    if (!state.user) return;
-    try {
-      const phoneKey = state.user.phone.replace(/[^0-9]/g, '');
-      await deleteDoc(doc(db, 'device_tokens', 'customer_' + phoneKey));
-    } catch (e) { console.error('FCM: Remove failed:', e); }
-  }
-
-  // DARK MODE
-  function toggleDarkMode() {
-    state.darkMode = !state.darkMode;
-    localStorage.setItem("syedgo_customer_dark", state.darkMode);
-    applyDarkMode();
-  }
-
-  function applyDarkMode() {
-    if (state.darkMode) { document.body.classList.add("dark"); document.getElementById("darkToggle").textContent = "☀️"; }
-    else { document.body.classList.remove("dark"); document.getElementById("darkToggle").textContent = "🌙"; }
-  }
-
-  async function saveToFirebase() {
-    if (!state.user || !state.user.phone) return;
-    try { await setDoc(doc(db, "users", state.user.phone), { user: state.user, cart: state.cart, orders: state.orders, address: state.address, favorites: state.favorites, location: state.location, updatedAt: new Date().toISOString() }, { merge: true }); } catch (e) { console.error(e); }
-  }
-
-  function saveLocal() {
-    localStorage.setItem("syedgo_user", JSON.stringify(state.user));
-    localStorage.setItem("syedgo_cart", JSON.stringify(state.cart));
-    localStorage.setItem("syedgo_orders", JSON.stringify(state.orders));
-    localStorage.setItem("syedgo_fav", JSON.stringify(state.favorites));
-    localStorage.setItem("syedgo_addr", JSON.stringify(state.address));
-    localStorage.setItem("syedgo_coupon", JSON.stringify(state.coupon));
-    localStorage.setItem("syedgo_loc", state.location);
-  }
+  async function saveToFirebase() { if (!state.user || !state.user.phone) return; try { await setDoc(doc(db, "users", state.user.phone), { user: state.user, cart: state.cart, orders: state.orders, address: state.address, favorites: state.favorites, location: state.location, updatedAt: new Date().toISOString() }, { merge: true }); } catch (e) { console.error(e); } }
+  function saveLocal() { localStorage.setItem("syedgo_user", JSON.stringify(state.user)); localStorage.setItem("syedgo_cart", JSON.stringify(state.cart)); localStorage.setItem("syedgo_orders", JSON.stringify(state.orders)); localStorage.setItem("syedgo_fav", JSON.stringify(state.favorites)); localStorage.setItem("syedgo_addr", JSON.stringify(state.address)); localStorage.setItem("syedgo_coupon", JSON.stringify(state.coupon)); localStorage.setItem("syedgo_loc", state.location); }
   function save() { saveLocal(); saveToFirebase(); }
 
-  function toast(msg) { const t = document.getElementById("toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(window._t); window._t = setTimeout(() => t.classList.remove("show"), 2200); }
+  function toast(msg, type) { const t = document.getElementById("toast"); t.textContent = msg; t.className = "toast " + (type || ""); t.classList.add("show"); clearTimeout(window._t); window._t = setTimeout(() => t.classList.remove("show"), 2400); }
   function closeModal() { document.getElementById("modalRoot").innerHTML = ""; }
   function findProduct(id) { for (const s of getAllShops()) { const p = s.products.find(x => String(x.id) === String(id)); if (p) return { ...p, shopId: s.id, shopName: s.name }; } return null; }
   function cartCount() { return state.cart.reduce((a, b) => a + b.qty, 0); }
   function cartSubtotal() { return state.cart.reduce((a, b) => a + b.price * b.qty, 0); }
 
-  // ============================================
-  // DISTANCE-BASED DELIVERY FEE
-  // ============================================
   function calculateDistanceKm(lat1, lng1, lat2, lng2) {
     const R = 6371;
     const dLat = (lat2 - lat1) * Math.PI / 180;
     const dLng = (lng2 - lng1) * Math.PI / 180;
-    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-              Math.sin(dLng / 2) * Math.sin(dLng / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c;
+    const a = Math.sin(dLat/2) ** 2 + Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) * Math.sin(dLng/2) ** 2;
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
   }
 
   function deliveryFee() {
@@ -316,8 +404,7 @@ body.dark .dark-toggle { background: var(--accent); }
     const ratePerKm = state.settings.RATE_PER_KM || 40;
     const minFee = state.settings.MIN_DELIVERY_FEE || 50;
     const maxFee = state.settings.MAX_DELIVERY_FEE || 500;
-    const customerLat = state.address.lat;
-    const customerLng = state.address.lng;
+    const customerLat = state.address.lat, customerLng = state.address.lng;
     if (!customerLat || !customerLng) return minFee;
     const shopNames = [...new Set(state.cart.map(i => i.shopName).filter(Boolean))];
     const firstShop = findShopByName(shopNames[0]);
@@ -325,19 +412,16 @@ body.dark .dark-toggle { background: var(--accent); }
     const straightKm = calculateDistanceKm(firstShop.location.lat, firstShop.location.lng, customerLat, customerLng);
     const roadKm = straightKm * 1.3;
     let fee = Math.round(roadKm * ratePerKm);
-    fee = Math.max(minFee, Math.min(maxFee, fee));
-    console.log(`📏 Distance: ${straightKm.toFixed(2)} km → ${roadKm.toFixed(2)} km road | Fee: Rs ${fee}`);
-    return fee;
+    return Math.max(minFee, Math.min(maxFee, fee));
   }
-
   function getDistanceText() {
     if (!state.cart.length) return '';
-    const customerLat = state.address.lat, customerLng = state.address.lng;
-    if (!customerLat || !customerLng) return '';
+    const cLat = state.address.lat, cLng = state.address.lng;
+    if (!cLat || !cLng) return '';
     const shopNames = [...new Set(state.cart.map(i => i.shopName).filter(Boolean))];
     const firstShop = findShopByName(shopNames[0]);
-    if (!firstShop || !firstShop.location || !firstShop.location.lat) return '';
-    const km = calculateDistanceKm(firstShop.location.lat, firstShop.location.lng, customerLat, customerLng) * 1.3;
+    if (!firstShop || !firstShop.location) return '';
+    const km = calculateDistanceKm(firstShop.location.lat, firstShop.location.lng, cLat, cLng) * 1.3;
     return `(${km.toFixed(1)} km)`;
   }
 
@@ -345,44 +429,43 @@ body.dark .dark-toggle { background: var(--accent); }
   function discountAmount() { if (!state.coupon) return 0; const c = COUPONS[state.coupon]; if (!c) return 0; const sub = cartSubtotal(); if (sub < c.min) return 0; if (c.type === "percent") return Math.round(sub * c.value / 100); if (c.type === "flat") return c.value; if (c.type === "shipping") return deliveryFee(); return 0; }
   function cartTotal() { return Math.max(0, cartSubtotal() + deliveryFee() + platformFee() - discountAmount()); }
   function updateBadge() { const b = document.getElementById("cartBadge"); const n = cartCount(); if (n > 0) { b.textContent = n; b.classList.remove("hidden"); } else b.classList.add("hidden"); }
-  function toggleFav(shopId, e) { if(e) e.stopPropagation(); const i = state.favorites.indexOf(shopId); if (i >= 0) { state.favorites.splice(i, 1); toast("Removed from favourites"); } else { state.favorites.push(shopId); toast("Added to favourites ❤️"); } save(); render(); }
-  function addToCart(pid, qty = 1) { const p = findProduct(pid); if (!p) return; const ex = state.cart.find(i => String(i.id) === String(pid)); if (ex) ex.qty += qty; else state.cart.push({ id: p.id, name: p.name, price: p.price, qty: qty, shopName: p.shopName }); save(); updateBadge(); render(); toast(p.name + " added"); }
+  function toggleFav(shopId, e) { if(e) e.stopPropagation(); const i = state.favorites.indexOf(shopId); if (i >= 0) { state.favorites.splice(i, 1); toast("Removed from favourites", "info"); } else { state.favorites.push(shopId); toast("Added to favourites", "success"); } save(); render(); }
+  function addToCart(pid, qty = 1) { const p = findProduct(pid); if (!p) return; const ex = state.cart.find(i => String(i.id) === String(pid)); if (ex) ex.qty += qty; else state.cart.push({ id: p.id, name: p.name, price: p.price, qty, shopName: p.shopName }); save(); updateBadge(); render(); toast(p.name + " added", "success"); }
   function changeQty(id, delta) { const item = state.cart.find(i => String(i.id) === String(id)); if (!item) return; item.qty += delta; if (item.qty <= 0) state.cart = state.cart.filter(i => String(i.id) !== String(id)); save(); updateBadge(); render(); }
   function setCategory(c) { state.category = c; render(); }
   function openShop(id) { state.currentShop = id; render(); window.scrollTo(0,0); }
   function backToHome() { state.currentShop = null; render(); }
 
   function normalizePhoneForLink(phone) { if (!phone) return ""; return String(phone).replace(/[^0-9]/g, ""); }
-  function openRiderWhatsApp(riderPhone, riderName) {
-    if (!riderPhone) return toast("Rider phone not available");
-    const cleaned = normalizePhoneForLink(riderPhone);
-    if (!cleaned) return toast("Invalid rider phone");
-    const msg = encodeURIComponent(`Assalam o Alaikum ${riderName || 'Rider'}, this is your customer from SwatGo.`);
-    window.open(`https://wa.me/${cleaned}?text=${msg}`, "_blank");
-  }
-  function callRider(riderPhone) {
-    if (!riderPhone) return toast("Rider phone not available");
-    const cleaned = normalizePhoneForLink(riderPhone);
-    if (!cleaned) return toast("Invalid rider phone");
-    window.location.href = `tel:+${cleaned}`;
-  }
-  function contactRiderFromOrder(orderId) {
-    const o = state.orders.find(x => x.id === orderId);
-    if (!o) return;
-    if (!o.rider || !o.rider.phone) return toast("Rider not assigned yet");
-    openRiderWhatsApp(o.rider.phone, o.rider.name);
-  }
+  function openRiderWhatsApp(riderPhone, riderName) { if (!riderPhone) return toast("Rider phone not available", "warning"); const cleaned = normalizePhoneForLink(riderPhone); if (!cleaned) return toast("Invalid rider phone", "error"); const msg = encodeURIComponent(`Assalam o Alaikum ${riderName || 'Rider'}, this is your customer from SwatGo.`); window.open(`https://wa.me/${cleaned}?text=${msg}`, "_blank"); }
+  function callRider(riderPhone) { if (!riderPhone) return toast("Rider phone not available", "warning"); const cleaned = normalizePhoneForLink(riderPhone); if (!cleaned) return toast("Invalid rider phone", "error"); window.location.href = `tel:+${cleaned}`; }
+  function contactRiderFromOrder(orderId) { const o = state.orders.find(x => x.id === orderId); if (!o) return; if (!o.rider || !o.rider.phone) return toast("Rider not assigned yet", "info"); openRiderWhatsApp(o.rider.phone, o.rider.name); }
 
   function chatWithMerchant(orderId) {
-    const o = state.orders.find(x => x.id === orderId);
-    if (!o) return;
+    const o = state.orders.find(x => x.id === orderId); if (!o) return;
     const shopName = (o.items || [])[0]?.shopName || "Store";
     const shop = findShopByName(shopName);
-    if (!shop || !shop.merchantPhone) return toast("Merchant phone not available");
+    if (!shop || !shop.merchantPhone) return toast("Merchant phone not available", "warning");
     const phone = String(shop.merchantPhone).replace(/[^0-9]/g, '');
-    if (!phone) return toast("Invalid merchant phone");
+    if (!phone) return toast("Invalid merchant phone", "error");
     const message = `Assalam o Alaikum ${shop.name},\n\nMera order #${o.id} hai.\n\nOrder details:\n${(o.items || []).map(i => `• ${i.name} × ${i.qty}`).join('\n')}\n\nTotal: Rs ${o.total}\n\nKuch kehna tha is order ke bare mein.`;
     window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, "_blank");
+  }
+
+  // ============================================
+  // EMPTY STATE ILLUSTRATIONS (SVG)
+  // ============================================
+  function emptyCartSVG() {
+    return `<svg viewBox="0 0 200 200" fill="none"><circle cx="100" cy="100" r="70" fill="#D1FAE5" opacity="0.5"/><rect x="60" y="80" width="80" height="55" rx="8" stroke="#059669" stroke-width="3" fill="white"/><path d="M75 80v-8a5 5 0 0110 0v8M115 80v-8a5 5 0 0110 0v8" stroke="#059669" stroke-width="3" stroke-linecap="round"/><circle cx="85" cy="105" r="3" fill="#059669"/><circle cx="115" cy="105" r="3" fill="#059669"/><path d="M88 120c3 4 9 6 12 6s9-2 12-6" stroke="#059669" stroke-width="3" stroke-linecap="round"/></svg>`;
+  }
+  function emptyOrdersSVG() {
+    return `<svg viewBox="0 0 200 200" fill="none"><circle cx="100" cy="100" r="70" fill="#FEF3C7" opacity="0.5"/><rect x="55" y="70" width="90" height="70" rx="8" stroke="#F59E0B" stroke-width="3" fill="white"/><path d="M55 85h90" stroke="#F59E0B" stroke-width="3"/><rect x="65" y="95" width="40" height="8" rx="2" fill="#F59E0B" opacity="0.4"/><rect x="65" y="110" width="60" height="8" rx="2" fill="#F59E0B" opacity="0.3"/></svg>`;
+  }
+  function emptySearchSVG() {
+    return `<svg viewBox="0 0 200 200" fill="none"><circle cx="100" cy="100" r="70" fill="#DBEAFE" opacity="0.5"/><circle cx="90" cy="90" r="30" stroke="#3B82F6" stroke-width="3" fill="white"/><path d="m112 112 20 20" stroke="#3B82F6" stroke-width="4" stroke-linecap="round"/><path d="M75 90h30M90 75v30" stroke="#3B82F6" stroke-width="2" opacity="0.3" stroke-linecap="round"/></svg>`;
+  }
+  function emptyShopsSVG() {
+    return `<svg viewBox="0 0 200 200" fill="none"><circle cx="100" cy="100" r="70" fill="#D1FAE5" opacity="0.5"/><path d="M60 85l10-20h60l10 20v50a5 5 0 01-5 5H65a5 5 0 01-5-5V85z" stroke="#059669" stroke-width="3" fill="white" stroke-linejoin="round"/><path d="M60 85h80M75 85V75a25 25 0 0110-20 25 25 0 0110 20v10" stroke="#059669" stroke-width="3" stroke-linecap="round"/></svg>`;
   }
 
   function renderHome() {
@@ -391,35 +474,40 @@ body.dark .dark-toggle { background: var(--accent); }
     const list = allShops.filter(s => state.category === "all" || s.category === state.category);
     let featuredHtml = "";
     if (featured.length > 0 && state.category === "all") {
-      featuredHtml = `<h2>Featured Stores ⭐</h2><div style="display:flex;gap:12px;overflow-x:auto;padding-bottom:12px;scrollbar-width:none;">${featured.map(s => `<div class="card" style="min-width:220px;flex-shrink:0;margin-bottom:0;cursor:pointer;" onclick="openShop(${s.id})"><div class="featured-tag ${s.isNew ? 'new-tag' : ''}">${s.isNew ? 'NEW' : 'Featured'}</div><div class="shop-header" style="flex-direction:column;text-align:center;"><div class="shop-img" style="margin-bottom:8px;">${s.emoji}</div><div class="shop-info"><h3>${s.name}</h3><p>⭐ ${s.rating} • ${s.time}</p></div></div></div>`).join("")}</div>`;
+      featuredHtml = `<h2>⭐ Featured Stores</h2><div style="display:flex;gap:12px;overflow-x:auto;padding-bottom:12px;scrollbar-width:none;">${featured.map(s => `<div class="card" style="min-width:240px;flex-shrink:0;margin-bottom:0;cursor:pointer;padding:14px;" onclick="openShop(${s.id})"><div class="featured-tag">${s.isNew ? 'NEW' : 'FEATURED'}</div><div style="display:flex;flex-direction:column;align-items:center;text-align:center;padding-top:4px;"><div class="shop-img" style="width:64px;height:64px;font-size:30px;margin-bottom:10px;">${s.emoji}</div><h3 style="font-size:14px;margin-bottom:4px;">${s.name}</h3><p style="font-size:11px;">⭐ ${s.rating} • ${s.time}</p></div></div>`).join("")}</div>`;
     }
+
+    if (state.isLoading) {
+      return `<div class="categories">${CATEGORIES.map(c => `<div class="cat ${state.category===c.key?'active':''}" onclick="setCategory('${c.key}')"><span class="em">${c.em}</span>${c.label}</div>`).join("")}</div><h2>Loading shops...</h2>${[1,2,3].map(() => `<div class="skeleton-card"><div class="skeleton skeleton-circle"></div><div class="skeleton-lines"><div class="skeleton skeleton-line"></div><div class="skeleton skeleton-line short"></div></div></div>`).join("")}`;
+    }
+
     return `<div class="categories">${CATEGORIES.map(c => `<div class="cat ${state.category===c.key?'active':''}" onclick="setCategory('${c.key}')"><span class="em">${c.em}</span>${c.label}</div>`).join("")}</div>
       ${featuredHtml}
-      <h2>All Shops (${list.length})</h2>
-      ${list.length === 0 ? '<div class="empty"><span class="big">🔎</span>No shops yet</div>' : list.map(s => `<div class="card">
-        <div class="featured-tag ${s.isNew ? 'new-tag' : ''}" style="display:${s.isNew ? 'block' : 'none'};">NEW</div>
-        <div class="shop-header" onclick="openShop(${s.id})"><div class="shop-img">${s.emoji}</div><div class="shop-info" style="flex:1"><h3>${s.name}</h3><p>${s.category} • ⭐ ${s.rating} • ${s.time}</p></div><button class="fav-btn" onclick="toggleFav(${s.id}, event)" style="background:none;border:none;font-size:20px;cursor:pointer;">${state.favorites.includes(s.id)?'❤️':'🤍'}</button></div>
-        <div style="margin-top:12px">${s.products.length === 0 ? `<p style="font-size:12px;color:var(--text-light);text-align:center;padding:8px;">No products yet</p>` : s.products.slice(0,2).map(p => `<div class="product-row"><div class="product-info" onclick="openProduct(${p.id})"><h4>${p.name}</h4><p>Rs ${p.price}</p></div>${p.stock !== false ? `<button class="add-btn" onclick="addToCart(${p.id})">Add</button>` : ''}</div>`).join("")}${s.products.length > 2 ? `<button class="add-btn" style="width:100%;margin-top:10px;background:var(--bg);color:var(--text)" onclick="openShop(${s.id})">View all ${s.products.length} items</button>` : ""}</div>
+      <h2>🏪 All Shops (${list.length})</h2>
+      ${list.length === 0 ? `<div class="empty">${emptyShopsSVG()}<h3>No shops yet</h3><p>Shops will appear here as merchants join SwatGo</p></div>` : list.map(s => `<div class="card">
+        ${s.isNew ? '<div class="featured-tag">NEW</div>' : ''}
+        <div class="shop-header" onclick="openShop(${s.id})"><div class="shop-img">${s.emoji}</div><div class="shop-info" style="flex:1"><h3>${s.name}</h3><p>${s.category} • ⭐ ${s.rating} • ${s.time}</p></div><button onclick="toggleFav(${s.id}, event)" style="background:none;border:none;font-size:22px;cursor:pointer;">${state.favorites.includes(s.id)?'❤️':'🤍'}</button></div>
+        <div style="margin-top:12px">${s.products.length === 0 ? `<p style="font-size:12px;color:var(--text-light);text-align:center;padding:8px;">No products yet</p>` : s.products.slice(0,2).map(p => `<div class="product-row"><div class="product-info" onclick="openProduct(${p.id})"><h4>${p.name}</h4><p>Rs ${p.price}</p></div>${p.stock !== false ? `<button class="add-btn" onclick="addToCart(${p.id})">+ Add</button>` : ''}</div>`).join("")}${s.products.length > 2 ? `<button class="add-btn" style="width:100%;margin-top:10px;background:var(--bg);color:var(--text);box-shadow:none;border:1px solid var(--border);" onclick="openShop(${s.id})">View all ${s.products.length} items</button>` : ""}</div>
       </div>`).join("")}`;
   }
 
   function renderShop() {
     const s = findShopById(state.currentShop);
     if (!s) return renderHome();
-    return `<button class="add-btn" style="margin-bottom:12px;background:var(--bg);color:var(--text);border:1px solid var(--border)" onclick="backToHome()">← Back</button>
-      <div style="height:120px;border-radius:16px;background:${s.banner};margin-bottom:-40px;position:relative;z-index:1;"></div>
+    return `<button class="add-btn" style="margin-bottom:12px;background:var(--bg);color:var(--text);border:1px solid var(--border);box-shadow:none;" onclick="backToHome()">← Back</button>
+      <div style="height:120px;border-radius:var(--radius);background:${s.banner};margin-bottom:-40px;position:relative;z-index:1;"></div>
       <div class="card" style="margin-top:-20px;position:relative;z-index:2;padding-top:50px;">
-        <div class="shop-header" style="position:absolute;top:-30px;left:16px;right:16px;"><div class="shop-img" style="width:70px;height:70px;font-size:32px;border:3px solid var(--card);box-shadow:0 4px 10px rgba(0,0,0,0.1);">${s.emoji}</div></div>
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;"><div><h3>${s.name}</h3><p style="margin-top:4px;">${s.category} • ⭐ ${s.rating}</p><p style="margin-top:4px;font-size:12px;color:var(--accent);font-weight:600;">🕒 ${s.hours}</p>${s.address ? `<p style="margin-top:4px;font-size:12px;">📍 ${s.address}</p>` : ""}</div><button class="fav-btn" onclick="toggleFav(${s.id})" style="font-size:24px;">${state.favorites.includes(s.id)?'❤️':'🤍'}</button></div>
-        <button class="add-btn" style="width:100%;margin-top:12px;background:var(--bg);color:var(--text);border:1px solid var(--border)" onclick="openReviews('${s.name.replace(/'/g,"\\'")}')">⭐ Read Reviews</button>
+        <div class="shop-header" style="position:absolute;top:-30px;left:16px;right:16px;"><div class="shop-img" style="width:70px;height:70px;font-size:32px;border:3px solid var(--card);box-shadow:var(--shadow-md);">${s.emoji}</div></div>
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;"><div><h3 style="font-size:18px;">${s.name}</h3><p style="margin-top:4px;font-size:12px;">${s.category} • ⭐ ${s.rating}</p><p style="margin-top:4px;font-size:12px;color:var(--accent);font-weight:700;">🕒 ${s.hours}</p>${s.address ? `<p style="margin-top:4px;font-size:12px;">📍 ${s.address}</p>` : ""}</div><button onclick="toggleFav(${s.id})" style="background:none;border:none;font-size:26px;cursor:pointer;">${state.favorites.includes(s.id)?'❤️':'🤍'}</button></div>
+        <button class="add-btn" style="width:100%;margin-top:14px;background:var(--bg);color:var(--text);box-shadow:none;border:1px solid var(--border);" onclick="openReviews('${s.name.replace(/'/g,"\\'")}')">⭐ Read Reviews</button>
       </div>
-      <h2 style="margin-top:16px;">Menu (${s.products.length})</h2>
-      ${s.products.length === 0 ? '<div class="empty"><span class="big">🍽️</span>No products added yet</div>' : s.products.map(p => `<div class="card" onclick="openProduct(${p.id})" style="cursor:pointer;"><div class="product-row"><div class="product-info"><h4>${p.name} ${p.stock === false ? '<span style="color:red;font-size:10px;">(Out of stock)</span>' : ''}</h4><p style="font-weight:600;color:var(--text);margin-top:4px;">Rs ${p.price}</p><p style="font-size:12px;color:var(--text-light);margin-top:4px;">${p.desc}</p></div>${p.stock !== false ? `<button class="add-btn" onclick="event.stopPropagation(); addToCart(${p.id})">Add +</button>` : ''}</div></div>`).join("")}`;
+      <h2 style="margin-top:16px;">🍽️ Menu (${s.products.length})</h2>
+      ${s.products.length === 0 ? '<div class="empty">' + emptyShopsSVG() + '<h3>No products yet</h3></div>' : s.products.map(p => `<div class="card" onclick="openProduct(${p.id})" style="cursor:pointer;padding:14px;"><div class="product-row" style="padding:0;border:none;"><div class="product-info"><h4>${p.name} ${p.stock === false ? '<span style="color:var(--danger);font-size:10px;font-weight:700;">(Out of stock)</span>' : ''}</h4><p style="color:var(--brand);font-weight:800;margin-top:4px;">Rs ${p.price}</p><p style="font-size:12px;color:var(--text-light);margin-top:4px;font-weight:500;">${p.desc}</p></div>${p.stock !== false ? `<button class="add-btn" onclick="event.stopPropagation(); addToCart(${p.id})">+ Add</button>` : ''}</div></div>`).join("")}`;
   }
 
   function openProduct(pid) {
     const p = findProduct(pid); if (!p) return;
-    document.getElementById("modalRoot").innerHTML = `<div class="overlay" onclick="if(event.target===this)closeModal()"><div class="sheet"><div style="height:180px;background:var(--bg);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:80px;margin-bottom:16px;">🍽️</div><h3>${p.name}</h3><p style="font-size:14px;color:var(--text-light);margin:8px 0 16px;">${p.desc}</p><div style="font-size:20px;font-weight:700;color:var(--text);margin-bottom:16px;">Rs ${p.price}</div><div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;"><span style="font-size:14px;font-weight:600;">Quantity:</span><div class="qty-box"><button onclick="let q=document.getElementById('prodQty'); if(q.value>1)q.value--;">−</button><input type="number" id="prodQty" value="1" min="1" style="width:50px;text-align:center;border:1px solid var(--border);border-radius:8px;padding:8px;font-weight:bold;background:var(--input-bg);color:var(--text);" readonly><button onclick="document.getElementById('prodQty').value++;">+</button></div></div><button class="checkout-btn" style="background:var(--primary);" onclick="let q=parseInt(document.getElementById('prodQty').value); addToCart(${p.id}, q); closeModal();">Add to Cart - Rs ${p.price}</button><button class="add-btn" style="width:100%;margin-top:10px;background:var(--bg);color:var(--text)" onclick="closeModal()">Cancel</button></div></div>`;
+    document.getElementById("modalRoot").innerHTML = `<div class="overlay" onclick="if(event.target===this)closeModal()"><div class="sheet"><div style="height:180px;background:linear-gradient(135deg, var(--brand-light), #A7F3D0);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;font-size:80px;margin-bottom:16px;">🍽️</div><h3>${p.name}</h3><p style="font-size:14px;color:var(--text-light);margin:8px 0 16px;">${p.desc}</p><div style="font-size:22px;font-weight:800;color:var(--brand);margin-bottom:16px;font-feature-settings:'tnum';">Rs ${p.price}</div><div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;"><span style="font-size:14px;font-weight:700;">Quantity:</span><div class="qty-box"><button onclick="let q=document.getElementById('prodQty'); if(q.value>1)q.value--;">−</button><input type="number" id="prodQty" value="1" min="1" style="width:50px;text-align:center;border:1px solid var(--border);border-radius:10px;padding:8px;font-weight:800;background:var(--input-bg);color:var(--text);" readonly><button onclick="document.getElementById('prodQty').value++;">+</button></div></div><button class="checkout-btn" onclick="let q=parseInt(document.getElementById('prodQty').value); addToCart(${p.id}, q); closeModal();">Add to Cart - Rs ${p.price}</button><button class="add-btn" style="width:100%;margin-top:10px;background:var(--bg);color:var(--text);box-shadow:none;border:1px solid var(--border);" onclick="closeModal()">Cancel</button></div></div>`;
   }
 
   function renderSearchResults() {
@@ -428,25 +516,25 @@ body.dark .dark-toggle { background: var(--accent); }
     getAllShops().forEach(s => { if (s.name.toLowerCase().includes(q) || s.category.toLowerCase().includes(q)) res.push({ type: "shop", data: s }); s.products.forEach(p => { if (p.name.toLowerCase().includes(q) || (p.desc || "").toLowerCase().includes(q)) res.push({ type: "product", data: { ...p, shop: s.name } }); }); });
     if (state.searchFilter === "price_low") res.sort((a,b) => (a.type==='product'?a.data.price:0) - (b.type==='product'?b.data.price:0));
     if (state.searchFilter === "price_high") res.sort((a,b) => (b.type==='product'?b.data.price:0) - (a.type==='product'?a.data.price:0));
-    if (!res.length) return '<div class="empty"><span class="big">😕</span>No results</div>';
-    return res.map(r => r.type === "shop" ? `<div class="card" onclick="openShop(${r.data.id})"><div class="shop-header"><div class="shop-img">${r.data.emoji}</div><div class="shop-info"><h3>${r.data.name}</h3><p>${r.data.category}</p></div></div></div>` : `<div class="card"><div class="product-row"><div class="product-info" onclick="openProduct(${r.data.id})"><h4>${r.data.name}</h4><p>${r.data.shop} • Rs ${r.data.price}</p></div><button class="add-btn" onclick="addToCart(${r.data.id})">Add</button></div></div>`).join("");
+    if (!res.length) return '<div class="empty">' + emptySearchSVG() + '<h3>No results found</h3><p>Try a different search term</p></div>';
+    return res.map(r => r.type === "shop" ? `<div class="card" onclick="openShop(${r.data.id})"><div class="shop-header"><div class="shop-img">${r.data.emoji}</div><div class="shop-info"><h3>${r.data.name}</h3><p>${r.data.category}</p></div></div></div>` : `<div class="card"><div class="product-row" style="border:none;padding:0;"><div class="product-info" onclick="openProduct(${r.data.id})"><h4>${r.data.name}</h4><p>${r.data.shop} • Rs ${r.data.price}</p></div><button class="add-btn" onclick="addToCart(${r.data.id})">+ Add</button></div></div>`).join("");
   }
 
-  function renderSearch() { return `<h2>Search</h2><input id="searchInput" class="search-input" placeholder="Search..." value="${state.searchQuery}" oninput="state.searchQuery=this.value; document.getElementById('searchResults').innerHTML=renderSearchResults()" /><div class="filter-chips"><div class="filter-chip ${state.searchFilter==='all'?'active':''}" onclick="state.searchFilter='all';render()">All</div><div class="filter-chip ${state.searchFilter==='price_low'?'active':''}" onclick="state.searchFilter='price_low';render()">💰 Low</div><div class="filter-chip ${state.searchFilter==='price_high'?'active':''}" onclick="state.searchFilter='price_high';render()">💎 High</div></div><div id="searchResults">${renderSearchResults()}</div>${!state.searchQuery ? `<div class="empty"><span class="big">🔍</span>Try "milk", "pizza"</div>` : ""}`; }
+  function renderSearch() { return `<h2>🔍 Search</h2><input id="searchInput" class="search-input" placeholder="Search for shops, food, products..." value="${state.searchQuery}" oninput="state.searchQuery=this.value; document.getElementById('searchResults').innerHTML=renderSearchResults()" /><div class="filter-chips"><div class="filter-chip ${state.searchFilter==='all'?'active':''}" onclick="state.searchFilter='all';render()">All</div><div class="filter-chip ${state.searchFilter==='price_low'?'active':''}" onclick="state.searchFilter='price_low';render()">💰 Low Price</div><div class="filter-chip ${state.searchFilter==='price_high'?'active':''}" onclick="state.searchFilter='price_high';render()">💎 High Price</div></div><div id="searchResults">${renderSearchResults()}</div>${!state.searchQuery ? `<div class="empty">${emptySearchSVG()}<h3>What are you looking for?</h3><p>Try searching "milk", "burger", or "medicine"</p></div>` : ""}`; }
 
   function renderCart() {
-    if (!state.cart.length) return '<div class="empty"><span class="big">🛒</span>Your cart is empty</div>';
+    if (!state.cart.length) return `<h2>🛒 Your Cart</h2><div class="empty">${emptyCartSVG()}<h3>Your cart is empty</h3><p>Add items from your favourite shops to get started</p><button class="checkout-btn" style="max-width:200px;margin:0 auto;" onclick="state.tab='home';render()">Browse Shops</button></div>`;
     const sub = cartSubtotal(), df = deliveryFee(), pf = platformFee(), disc = discountAmount(), total = cartTotal();
     const distText = getDistanceText();
-    return `<h2>Your Cart</h2><div class="card">${state.cart.map(i => `<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);"><div><h4 style="font-size:14px">${i.name}</h4><p style="font-size:12px;color:var(--text-light)">${i.shopName} • Rs ${i.price}</p></div><div class="qty-box"><button onclick="changeQty(${i.id},-1)">−</button><span>${i.qty}</span><button onclick="changeQty(${i.id},1)">+</button></div></div>`).join("")}</div><div class="card"><div class="fee-row"><span>Subtotal</span><span>Rs ${sub}</span></div><div class="fee-row"><span>Delivery ${distText}</span><span>Rs ${df}</span></div><div class="fee-row"><span>Platform Fee</span><span>Rs ${pf}</span></div>${disc>0?`<div class="fee-row" style="color:var(--success)"><span>Discount</span><span>-Rs ${disc}</span></div>`:""}<div class="fee-row total"><span>Total</span><span>Rs ${total}</span></div></div><div class="card" style="display:flex;justify-content:space-between;align-items:center"><div style="font-size:14px">🎟️ ${state.coupon ? "Coupon: <b>"+state.coupon+"</b>" : "Coupon?"}</div>${state.coupon ? `<button class="add-btn" style="background:var(--danger)" onclick="state.coupon=null;save();render()">Remove</button>` : `<button class="add-btn" onclick="applyCoupon()">Apply</button>`}</div><button class="checkout-btn" onclick="openCheckout()">Proceed to Checkout</button>`;
+    return `<h2>🛒 Your Cart</h2><div class="card">${state.cart.map(i => `<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);"><div><h4 style="font-size:14px;font-weight:700;">${i.name}</h4><p style="font-size:12px;color:var(--text-light);font-weight:500;">${i.shopName} • Rs ${i.price}</p></div><div class="qty-box"><button onclick="changeQty(${i.id},-1)">−</button><span>${i.qty}</span><button onclick="changeQty(${i.id},1)">+</button></div></div>`).join("")}</div><div class="card"><div class="fee-row"><span>Subtotal</span><span>Rs ${sub}</span></div><div class="fee-row"><span>Delivery ${distText}</span><span>Rs ${df}</span></div><div class="fee-row"><span>Platform Fee</span><span>Rs ${pf}</span></div>${disc>0?`<div class="fee-row" style="color:var(--success)"><span>Discount</span><span style="color:var(--success);">-Rs ${disc}</span></div>`:""}<div class="fee-row total"><span>Total</span><span>Rs ${total}</span></div></div><div class="card" style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px;"><div style="font-size:13px;font-weight:600;">🎟️ ${state.coupon ? "Coupon: <b style='color:var(--brand);'>"+state.coupon+"</b>" : "Have a coupon?"}</div>${state.coupon ? `<button class="add-btn" style="background:var(--danger);box-shadow:none;" onclick="state.coupon=null;save();render()">Remove</button>` : `<button class="add-btn" onclick="applyCoupon()">Apply</button>`}</div><button class="checkout-btn" onclick="openCheckout()">Proceed to Checkout →</button>`;
   }
 
   function openCheckout() {
-    if (state.cart.length === 0) return toast("Cart is empty");
-    if (!state.user) { toast("Please login first"); state.tab = "profile"; render(); return; }
+    if (state.cart.length === 0) return toast("Cart is empty", "warning");
+    if (!state.user) { toast("Please login first", "info"); state.tab = "profile"; render(); return; }
     const sub = cartSubtotal(), df = deliveryFee(), pf = platformFee(), disc = discountAmount(), total = cartTotal();
     const distText = getDistanceText();
-    document.getElementById("modalRoot").innerHTML = `<div class="overlay" onclick="if(event.target===this)closeModal()"><div class="sheet"><h3>Confirm Order</h3><div style="background:var(--bg);border-radius:14px;padding:16px;margin-bottom:16px;border:1px solid var(--border);cursor:pointer;" onclick="openLocationModal()"><div style="display:flex;justify-content:space-between;align-items:center;"><div><b>📍 ${state.address.label || 'Delivery Address'}</b><br><span style="font-size:13px;color:var(--text-light)">${state.address.details || 'Tap to set address'}</span></div><span style="font-size:20px;">›</span></div></div><div style="font-size:14px;color:var(--text-light);margin-bottom:8px;">Delivery / Pickup</div><div class="pay-opt active" id="optDelivery"><input type="radio" name="mode" value="delivery" checked onchange="updateMode()" /><div><b>Delivery</b><div style="font-size:12px;color:var(--text-light)">Rs ${df} ${distText}</div></div></div><div class="pay-opt" id="optPickup"><input type="radio" name="mode" value="pickup" onchange="updateMode()" /><div><b>Pickup</b><div style="font-size:12px;color:var(--text-light)">Free</div></div></div><div style="font-size:14px;color:var(--text-light);margin:16px 0 8px;">Payment Method</div><div class="pay-opt active" id="payCOD"><input type="radio" name="pay" value="cod" checked /><div class="pay-icon">💵</div><div><b>Cash on Delivery</b><div style="font-size:11px;color:var(--text-light);">Online payment coming soon</div></div></div><div class="fee-breakdown"><div class="fee-row"><span>Subtotal</span><span>Rs ${sub}</span></div><div class="fee-row"><span>Delivery ${distText}</span><span id="dfLabel">Rs ${df}</span></div><div class="fee-row"><span>Platform Fee</span><span>Rs ${pf}</span></div>${disc > 0 ? `<div class="fee-row" style="color:var(--success)"><span>Discount</span><span>-Rs ${disc}</span></div>` : ""}<div class="fee-row total"><span>Total</span><span id="totalLabel">Rs ${total}</span></div></div><button class="checkout-btn" style="background:var(--success);margin-top:20px;" onclick="placeOrder()">Place Order</button><button class="add-btn" style="width:100%;margin-top:10px;background:var(--bg);color:var(--text)" onclick="closeModal()">Cancel</button></div></div>`;
+    document.getElementById("modalRoot").innerHTML = `<div class="overlay" onclick="if(event.target===this)closeModal()"><div class="sheet"><h3>Confirm Order</h3><div style="background:var(--bg);border-radius:14px;padding:16px;margin-bottom:16px;border:1px solid var(--border);cursor:pointer;" onclick="openLocationModal()"><div style="display:flex;justify-content:space-between;align-items:center;"><div><b style="font-weight:700;">📍 ${state.address.label || 'Delivery Address'}</b><br><span style="font-size:12px;color:var(--text-light);font-weight:500;">${state.address.details || 'Tap to set address'}</span></div><span style="font-size:22px;color:var(--brand);">›</span></div></div><div style="font-size:13px;color:var(--text-light);margin-bottom:8px;font-weight:600;">Delivery / Pickup</div><div class="pay-opt active" id="optDelivery"><input type="radio" name="mode" value="delivery" checked onchange="updateMode()" /><div><b>Delivery</b><div style="font-size:12px;color:var(--text-light);font-weight:500;">Rs ${df} ${distText}</div></div></div><div class="pay-opt" id="optPickup"><input type="radio" name="mode" value="pickup" onchange="updateMode()" /><div><b>Pickup</b><div style="font-size:12px;color:var(--text-light);font-weight:500;">Free</div></div></div><div style="font-size:13px;color:var(--text-light);margin:16px 0 8px;font-weight:600;">Payment Method</div><div class="pay-opt active"><input type="radio" name="pay" value="cod" checked /><div style="font-size:22px;">💵</div><div><b>Cash on Delivery</b><div style="font-size:11px;color:var(--text-light);font-weight:500;">Online payment coming soon</div></div></div><div class="fee-breakdown"><div class="fee-row"><span>Subtotal</span><span>Rs ${sub}</span></div><div class="fee-row"><span>Delivery ${distText}</span><span id="dfLabel">Rs ${df}</span></div><div class="fee-row"><span>Platform Fee</span><span>Rs ${pf}</span></div>${disc > 0 ? `<div class="fee-row" style="color:var(--success);"><span>Discount</span><span style="color:var(--success);">-Rs ${disc}</span></div>` : ""}<div class="fee-row total"><span>Total</span><span id="totalLabel">Rs ${total}</span></div></div><button class="checkout-btn" onclick="placeOrder()">Place Order</button><button class="add-btn" style="width:100%;margin-top:10px;background:var(--bg);color:var(--text);box-shadow:none;border:1px solid var(--border);" onclick="closeModal()">Cancel</button></div></div>`;
     window._mode = "delivery"; window._pay = "cod";
   }
 
@@ -461,54 +549,41 @@ body.dark .dark-toggle { background: var(--accent); }
   }
 
   async function placeOrder() {
-    const mode = window._mode, pay = window._pay || "cod";
+    const mode = window._mode, pay = "cod";
     const sub = cartSubtotal();
     const df = mode === "delivery" ? deliveryFee() : 0;
     const pf = platformFee();
     const disc = discountAmount();
     const total = Math.max(0, sub + df + pf - disc);
     const orderId = "SW" + Date.now().toString().slice(-6);
-
     const shopNames = [...new Set(state.cart.map(i => i.shopName).filter(Boolean))];
     const firstShop = findShopByName(shopNames[0]);
-    const pickup = firstShop ? {
-      name: firstShop.name,
-      address: firstShop.address || '',
-      phone: firstShop.merchantPhone || '',
-      location: firstShop.location || null
-    } : { name: shopNames[0] || 'Store', address: '', phone: '', location: null };
+    const pickup = firstShop ? { name: firstShop.name, address: firstShop.address || '', phone: firstShop.merchantPhone || '', location: firstShop.location || null } : { name: shopNames[0] || 'Store', address: '', phone: '', location: null };
 
-    const order = {
-      id: orderId, userId: state.user.phone, userName: state.user.name, userPhone: state.user.phone,
-      items: [...state.cart], subtotal: sub, delivery: df, platformFee: pf, discount: disc, total: total,
-      mode, pay, address: state.address, pickup: pickup, status: "Placed",
-      createdAt: new Date().toISOString(), rider: null, riderEarning: 0, timeline: ["Placed"]
-    };
-
+    const order = { id: orderId, userId: state.user.phone, userName: state.user.name, userPhone: state.user.phone, items: [...state.cart], subtotal: sub, delivery: df, platformFee: pf, discount: disc, total, mode, pay, address: state.address, pickup, status: "Placed", createdAt: new Date().toISOString(), rider: null, riderEarning: 0, timeline: ["Placed"] };
     state.orders.unshift(order);
     state.cart = [];
     state.coupon = null;
     save(); updateBadge(); closeModal(); state.tab = "orders"; render();
-    toast("Order placed! #" + orderId);
-    try { await setDoc(doc(db, "orders", orderId), order); }
-    catch (e) { console.error(e); toast("Cloud sync failed"); }
+    toast("Order placed! #" + orderId, "success");
+    try { await setDoc(doc(db, "orders", orderId), order); } catch (e) { console.error(e); toast("Cloud sync failed", "error"); }
   }
 
   async function cancelOrder(orderId) {
     const o = state.orders.find(x => x.id === orderId); if (!o) return;
-    if (["Rider Assigned", "Picked Up", "On the Way", "Delivered"].includes(o.status)) return toast("Rider already assigned. Cannot cancel.");
+    if (["Rider Assigned", "Picked Up", "On the Way", "Delivered"].includes(o.status)) return toast("Rider already assigned. Cannot cancel.", "error");
     if (!confirm("Cancel this order?")) return;
     try {
       await updateDoc(doc(db, "orders", orderId), { status: "Cancelled", cancelledAt: new Date().toISOString(), cancelledBy: "Customer" });
       o.status = "Cancelled"; o.timeline = [...(o.timeline || []), "Cancelled"];
-      saveLocal(); toast("Order cancelled ❌"); render();
-    } catch (e) { console.error(e); toast("Failed to cancel"); }
+      saveLocal(); toast("Order cancelled", "info"); render();
+    } catch (e) { console.error(e); toast("Failed to cancel", "error"); }
   }
 
   function openTracking(orderId) {
     const o = state.orders.find(x => x.id === orderId); if (!o) return;
-    if (o.status === "Cancelled") return toast("Order was cancelled");
-    document.getElementById("modalRoot").innerHTML = `<div class="overlay" onclick="if(event.target===this) closeTracking()"><div class="sheet"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;"><h3 style="margin:0;">Track #${o.id}</h3><button class="add-btn" style="background:var(--bg);color:var(--text)" onclick="closeTracking()">✕</button></div><div id="liveTrackingMap"></div><div id="riderInfoBox"></div><div id="timelineBox"></div></div></div>`;
+    if (o.status === "Cancelled") return toast("Order was cancelled", "error");
+    document.getElementById("modalRoot").innerHTML = `<div class="overlay" onclick="if(event.target===this) closeTracking()"><div class="sheet"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;"><h3 style="margin:0;">Track #${o.id}</h3><button class="add-btn" style="background:var(--bg);color:var(--text);box-shadow:none;border:1px solid var(--border);" onclick="closeTracking()">✕</button></div><div id="liveTrackingMap"></div><div id="riderInfoBox"></div><div id="timelineBox"></div></div></div>`;
     setTimeout(() => initLiveTrackingMap(o), 150);
   }
 
@@ -548,52 +623,43 @@ body.dark .dark-toggle { background: var(--accent); }
     });
   }
 
-  function smoothMoveMarker(marker, newPos) {
-    const oldPos = marker.getPosition(); if (!oldPos) { marker.setPosition(newPos); return; }
-    const steps = 20, latStep = (newPos.lat - oldPos.lat()) / steps, lngStep = (newPos.lng - oldPos.lng()) / steps; let i = 0;
-    const timer = setInterval(() => { i++; marker.setPosition({ lat: oldPos.lat() + latStep * i, lng: oldPos.lng() + lngStep * i }); if (i >= steps) clearInterval(timer); }, 30);
-  }
-
+  function smoothMoveMarker(marker, newPos) { const oldPos = marker.getPosition(); if (!oldPos) { marker.setPosition(newPos); return; } const steps = 20, latStep = (newPos.lat - oldPos.lat()) / steps, lngStep = (newPos.lng - oldPos.lng()) / steps; let i = 0; const timer = setInterval(() => { i++; marker.setPosition({ lat: oldPos.lat() + latStep * i, lng: oldPos.lng() + lngStep * i }); if (i >= steps) clearInterval(timer); }, 30); }
   function closeTracking() { if (riderLocationListener) { riderLocationListener(); riderLocationListener = null; } if (orderStatusListener) { orderStatusListener(); orderStatusListener = null; } liveMap = null; liveRiderMarker = null; liveCustomerMarker = null; closeModal(); }
 
-  // RATINGS
   function openRating(orderId) {
     const o = state.orders.find(x => x.id === orderId); if (!o) return;
     const shopName = (o.items || [])[0]?.shopName || "";
     const riderPhone = o.rider?.phone || "";
     const riderName = o.rider?.name || "";
     window._storeRating = 0; window._riderRating = 0;
-    document.getElementById("modalRoot").innerHTML = `<div class="overlay" onclick="if(event.target===this)closeModal()"><div class="sheet"><h3>⭐ Rate Your Order</h3><p style="font-size:13px;color:var(--text-light);margin-bottom:16px;">Order #${o.id}</p><div style="text-align:center;margin-bottom:8px;font-weight:600;">${shopName || "Store"}</div><div class="stars" id="storeStars">${[1,2,3,4,5].map(i => `<span class="star" onclick="setStar('store',${i})">★</span>`).join("")}</div>${riderName ? `<div style="text-align:center;margin:16px 0 8px;font-weight:600;">🛵 ${riderName}</div><div class="stars" id="riderStars">${[1,2,3,4,5].map(i => `<span class="star" onclick="setStar('rider',${i})">★</span>`).join("")}</div>` : ''}<textarea id="reviewText" placeholder="Write your review (optional)..." rows="3" style="margin-top:16px;"></textarea><button class="checkout-btn" style="background:var(--accent);" onclick="submitRating('${orderId}', '${shopName.replace(/'/g,"\\'")}', '${riderPhone}')">Submit Rating</button><button class="add-btn" style="width:100%;margin-top:10px;background:var(--bg);color:var(--text)" onclick="closeModal()">Cancel</button></div></div>`;
+    document.getElementById("modalRoot").innerHTML = `<div class="overlay" onclick="if(event.target===this)closeModal()"><div class="sheet"><h3>⭐ Rate Your Order</h3><p style="font-size:13px;color:var(--text-light);margin-bottom:16px;font-weight:500;">Order #${o.id}</p><div style="text-align:center;margin-bottom:8px;font-weight:700;">${shopName || "Store"}</div><div class="stars" id="storeStars">${[1,2,3,4,5].map(i => `<span class="star" onclick="setStar('store',${i})">★</span>`).join("")}</div>${riderName ? `<div style="text-align:center;margin:16px 0 8px;font-weight:700;">🛵 ${riderName}</div><div class="stars" id="riderStars">${[1,2,3,4,5].map(i => `<span class="star" onclick="setStar('rider',${i})">★</span>`).join("")}</div>` : ''}<textarea id="reviewText" placeholder="Write your review (optional)..." rows="3" style="margin-top:16px;"></textarea><button class="checkout-btn" style="background:linear-gradient(135deg,#F59E0B,#D97706);box-shadow:0 6px 20px rgba(245,158,11,0.3);" onclick="submitRating('${orderId}', '${shopName.replace(/'/g,"\\'")}', '${riderPhone}')">Submit Rating</button><button class="add-btn" style="width:100%;margin-top:10px;background:var(--bg);color:var(--text);box-shadow:none;border:1px solid var(--border);" onclick="closeModal()">Cancel</button></div></div>`;
   }
 
-  function setStar(type, val) {
-    if (type === 'store') { window._storeRating = val; document.querySelectorAll('#storeStars .star').forEach((s, i) => s.classList.toggle('active', i < val)); }
-    else { window._riderRating = val; document.querySelectorAll('#riderStars .star').forEach((s, i) => s.classList.toggle('active', i < val)); }
-  }
+  function setStar(type, val) { if (type === 'store') { window._storeRating = val; document.querySelectorAll('#storeStars .star').forEach((s, i) => s.classList.toggle('active', i < val)); } else { window._riderRating = val; document.querySelectorAll('#riderStars .star').forEach((s, i) => s.classList.toggle('active', i < val)); } }
 
   async function submitRating(orderId, shopName, riderPhone) {
-    if (!window._storeRating && !window._riderRating) return toast("Please rate at least one");
+    if (!window._storeRating && !window._riderRating) return toast("Please rate at least one", "warning");
     const reviewText = document.getElementById("reviewText")?.value.trim() || "";
     const o = state.orders.find(x => x.id === orderId); if (!o) return;
     try {
       if (shopName && window._storeRating > 0) await setDoc(doc(db, "reviews", "rev_" + Date.now() + "_store"), { type: "store", storeName: shopName, orderId, customerPhone: state.user.phone, customerName: state.user.name, rating: window._storeRating, text: reviewText, createdAt: new Date().toISOString() });
       if (riderPhone && window._riderRating > 0) await setDoc(doc(db, "reviews", "rev_" + Date.now() + "_rider"), { type: "rider", riderPhone, orderId, customerPhone: state.user.phone, customerName: state.user.name, rating: window._riderRating, text: reviewText, createdAt: new Date().toISOString() });
       await updateDoc(doc(db, "orders", orderId), { rated: true, ratedAt: new Date().toISOString() });
-      o.rated = true; saveLocal(); closeModal(); toast("Thanks for your feedback! ⭐"); render();
-    } catch (e) { console.error(e); toast("Failed to submit rating"); }
+      o.rated = true; saveLocal(); closeModal(); toast("Thanks for your feedback!", "success"); render();
+    } catch (e) { console.error(e); toast("Failed to submit rating", "error"); }
   }
 
   function openReviews(storeName) {
-    document.getElementById("modalRoot").innerHTML = `<div class="overlay" onclick="if(event.target===this)closeModal()"><div class="sheet"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;"><h3 style="margin:0;">⭐ ${storeName} Reviews</h3><button class="add-btn" style="background:var(--bg);color:var(--text)" onclick="closeModal()">✕</button></div><div id="reviewsList"><div class="empty"><span class="big">⏳</span>Loading...</div></div></div></div>`;
+    document.getElementById("modalRoot").innerHTML = `<div class="overlay" onclick="if(event.target===this)closeModal()"><div class="sheet"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;"><h3 style="margin:0;">⭐ ${storeName} Reviews</h3><button class="add-btn" style="background:var(--bg);color:var(--text);box-shadow:none;border:1px solid var(--border);" onclick="closeModal()">✕</button></div><div id="reviewsList"><div class="empty">Loading reviews...</div></div></div></div>`;
     const q = query(collection(db, "reviews"), where("type", "==", "store"), where("storeName", "==", storeName));
     onSnapshot(q, (snap) => {
       const reviews = [];
       snap.forEach(d => reviews.push({ id: d.id, ...d.data() }));
       reviews.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       const list = document.getElementById("reviewsList"); if (!list) return;
-      if (reviews.length === 0) { list.innerHTML = '<div class="empty"><span class="big">📭</span>No reviews yet</div>'; return; }
+      if (reviews.length === 0) { list.innerHTML = '<div class="empty">No reviews yet. Be the first!</div>'; return; }
       const avg = (reviews.reduce((s, r) => s + (r.rating || 0), 0) / reviews.length).toFixed(1);
-      list.innerHTML = `<div class="card" style="text-align:center;background:var(--bg);"><div style="font-size:32px;">⭐ ${avg}</div><p style="font-size:12px;">${reviews.length} review${reviews.length > 1 ? 's' : ''}</p></div>` + reviews.map(r => `<div class="review-item"><div class="review-header"><b style="font-size:13px;">${r.customerName || 'Customer'}</b><span class="review-stars">${"★".repeat(r.rating)}${"☆".repeat(5 - r.rating)}</span></div>${r.text ? `<p class="review-text">${r.text}</p>` : ''}<p class="review-meta">${new Date(r.createdAt).toLocaleDateString()}</p></div>`).join("");
+      list.innerHTML = `<div class="card" style="text-align:center;background:var(--bg);"><div style="font-size:34px;font-weight:800;color:var(--accent);">⭐ ${avg}</div><p style="font-size:12px;font-weight:600;">${reviews.length} review${reviews.length > 1 ? 's' : ''}</p></div>` + reviews.map(r => `<div class="review-item"><div class="review-header"><b style="font-size:13px;">${r.customerName || 'Customer'}</b><span class="review-stars">${"★".repeat(r.rating)}${"☆".repeat(5 - r.rating)}</span></div>${r.text ? `<p class="review-text">${r.text}</p>` : ''}<p class="review-meta">${new Date(r.createdAt).toLocaleDateString()}</p></div>`).join("");
     });
   }
 
@@ -601,25 +667,7 @@ body.dark .dark-toggle { background: var(--accent); }
   let pickerMap = null, pickerMarker = null;
 
   function openLocationModal() {
-    document.getElementById("modalRoot").innerHTML = `<div class="overlay" onclick="if(event.target===this)closeModal()"><div class="sheet"><h3>📍 Delivery Address</h3>
-      <label style="display:block;font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px;">Enter your full address *</label>
-      <textarea id="addrDetails" placeholder="e.g. Mingora Bazar, near Bank Alfalah, House 123" rows="3" style="width:100%;padding:12px;border:1px solid var(--border);border-radius:12px;font-size:14px;background:var(--input-bg);color:var(--text);font-family:inherit;resize:none;margin-bottom:12px;">${state.address.details || ''}</textarea>
-      <button class="add-btn" onclick="goToMyLocation()" style="width:100%;margin-bottom:12px;background:#dbeafe;color:#1e40af;padding:12px;font-size:13px;">📍 Use My Current Location (Exact GPS)</button>
-      <details style="margin-bottom:12px;">
-        <summary style="cursor:pointer;font-size:12px;color:var(--text-light);padding:8px 0;">🎯 Adjust exact location on map (optional)</summary>
-        <div id="pickerMap" style="width:100%;height:220px;border-radius:14px;margin-top:8px;background:var(--bg);"></div>
-        <p style="font-size:11px;text-align:center;color:var(--text-light);margin-top:6px;">Drag pin or tap map for exact GPS location</p>
-      </details>
-      <div style="display:flex;gap:8px;margin-bottom:12px;">
-        <div class="filter-chip ${state.address.label==='Home'?'active':''}" onclick="setAddressLabel('Home')">🏠 Home</div>
-        <div class="filter-chip ${state.address.label==='Office'?'active':''}" onclick="setAddressLabel('Office')">🏢 Office</div>
-        <div class="filter-chip ${state.address.label==='Other'?'active':''}" onclick="setAddressLabel('Other')">📍 Other</div>
-      </div>
-      <label style="display:block;font-size:12px;color:var(--text-light);margin-bottom:4px;">Delivery Instructions (optional)</label>
-      <input id="addrInstructions" placeholder="Call before arriving, house color..." value="${state.address.instructions || ''}" />
-      <button class="checkout-btn" style="background:var(--primary);margin-top:12px;" onclick="saveAddress()">Save Address</button>
-      <button class="add-btn" style="width:100%;margin-top:10px;background:var(--bg);color:var(--text)" onclick="closeModal()">Cancel</button>
-    </div></div>`;
+    document.getElementById("modalRoot").innerHTML = `<div class="overlay" onclick="if(event.target===this)closeModal()"><div class="sheet"><h3>📍 Delivery Address</h3><label style="display:block;font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px;">Enter your full address *</label><textarea id="addrDetails" placeholder="e.g. Mingora Bazar, near Bank Alfalah, House 123" rows="3" style="width:100%;padding:14px;border:1px solid var(--border);border-radius:14px;font-size:14px;background:var(--input-bg);color:var(--text);font-family:inherit;resize:none;margin-bottom:12px;font-weight:500;">${state.address.details || ''}</textarea><button class="add-btn" onclick="goToMyLocation()" style="width:100%;margin-bottom:12px;background:linear-gradient(135deg,#3B82F6,#2563EB);box-shadow:0 4px 12px rgba(59,130,246,0.25);padding:12px;font-size:13px;">📍 Use My Current Location</button><details style="margin-bottom:12px;"><summary style="cursor:pointer;font-size:12px;color:var(--text-light);padding:8px 0;font-weight:600;">🎯 Adjust on map (optional)</summary><div id="pickerMap" style="width:100%;height:220px;border-radius:14px;margin-top:8px;background:var(--bg);"></div><p style="font-size:11px;text-align:center;color:var(--text-light);margin-top:6px;font-weight:500;">Drag pin or tap map</p></details><div style="display:flex;gap:8px;margin-bottom:12px;"><div class="filter-chip ${state.address.label==='Home'?'active':''}" onclick="setAddressLabel('Home')">🏠 Home</div><div class="filter-chip ${state.address.label==='Office'?'active':''}" onclick="setAddressLabel('Office')">🏢 Office</div><div class="filter-chip ${state.address.label==='Other'?'active':''}" onclick="setAddressLabel('Other')">📍 Other</div></div><label style="display:block;font-size:12px;color:var(--text-light);margin-bottom:4px;font-weight:600;">Delivery Instructions (optional)</label><input id="addrInstructions" placeholder="Call before arriving, house color..." value="${state.address.instructions || ''}" /><button class="checkout-btn" onclick="saveAddress()">Save Address</button><button class="add-btn" style="width:100%;margin-top:10px;background:var(--bg);color:var(--text);box-shadow:none;border:1px solid var(--border);" onclick="closeModal()">Cancel</button></div></div>`;
     setTimeout(() => initPickerMap(), 150);
   }
 
@@ -628,38 +676,22 @@ body.dark .dark-toggle { background: var(--accent); }
     const startPos = state.address.lat && state.address.lng ? { lat: state.address.lat, lng: state.address.lng } : DEFAULT_CENTER;
     pickerMap = new google.maps.Map(el, { center: startPos, zoom: 15, disableDefaultUI: true, zoomControl: true });
     pickerMarker = new google.maps.Marker({ position: startPos, map: pickerMap, draggable: true, icon: { url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png" } });
-    google.maps.event.addListener(pickerMarker, 'dragend', () => {
-      const pos = pickerMarker.getPosition();
-      state.address.lat = pos.lat(); state.address.lng = pos.lng();
-      new google.maps.Geocoder().geocode({ location: { lat: pos.lat(), lng: pos.lng() } }, (results, status) => {
-        const addrInput = document.getElementById('addrDetails');
-        if (status === "OK" && results[0] && results[0].formatted_address && addrInput && !addrInput.value) addrInput.value = results[0].formatted_address;
-      });
-    });
-    pickerMap.addListener('click', (e) => {
-      pickerMarker.setPosition(e.latLng);
-      state.address.lat = e.latLng.lat(); state.address.lng = e.latLng.lng();
-      new google.maps.Geocoder().geocode({ location: { lat: e.latLng.lat(), lng: e.latLng.lng() } }, (results, status) => {
-        const addrInput = document.getElementById('addrDetails');
-        if (status === "OK" && results[0] && results[0].formatted_address && addrInput && !addrInput.value) addrInput.value = results[0].formatted_address;
-      });
-    });
+    const handleGeocode = (lat, lng) => { new google.maps.Geocoder().geocode({ location: { lat, lng } }, (results, status) => { const input = document.getElementById('addrDetails'); if (status === "OK" && results[0] && results[0].formatted_address && input && !input.value) input.value = results[0].formatted_address; }); };
+    google.maps.event.addListener(pickerMarker, 'dragend', () => { const pos = pickerMarker.getPosition(); state.address.lat = pos.lat(); state.address.lng = pos.lng(); handleGeocode(pos.lat(), pos.lng()); });
+    pickerMap.addListener('click', (e) => { pickerMarker.setPosition(e.latLng); state.address.lat = e.latLng.lat(); state.address.lng = e.latLng.lng(); handleGeocode(e.latLng.lat(), e.latLng.lng()); });
   }
 
   function goToMyLocation() {
-    if (!navigator.geolocation) return toast("GPS not supported");
-    toast("Getting location...");
+    if (!navigator.geolocation) return toast("GPS not supported", "error");
+    toast("Getting your location...", "info");
     navigator.geolocation.getCurrentPosition((pos) => {
       const lat = pos.coords.latitude, lng = pos.coords.longitude;
       state.address.lat = lat; state.address.lng = lng;
       if (pickerMap) { pickerMap.setCenter({ lat, lng }); pickerMap.setZoom(17); }
       if (pickerMarker) pickerMarker.setPosition({ lat, lng });
-      new google.maps.Geocoder().geocode({ location: { lat, lng } }, (results, status) => {
-        const input = document.getElementById("addrDetails");
-        if (status === "OK" && results[0] && results[0].formatted_address && input) input.value = results[0].formatted_address;
-      });
-      toast("Location detected ✅");
-    }, (err) => { alert(err.code === 1 ? "🚫 Permission blocked." : "Error: " + err.message); }, { enableHighAccuracy: true, timeout: 15000 });
+      new google.maps.Geocoder().geocode({ location: { lat, lng } }, (results, status) => { const input = document.getElementById("addrDetails"); if (status === "OK" && results[0] && results[0].formatted_address && input) input.value = results[0].formatted_address; });
+      toast("Location detected", "success");
+    }, (err) => { toast(err.code === 1 ? "Permission blocked" : "Error: " + err.message, "error"); }, { enableHighAccuracy: true, timeout: 15000 });
   }
 
   function setAddressLabel(label) { state.address.label = label; openLocationModal(); }
@@ -667,24 +699,24 @@ body.dark .dark-toggle { background: var(--accent); }
   function saveAddress() {
     const details = document.getElementById('addrDetails').value.trim();
     const instructions = document.getElementById('addrInstructions').value.trim();
-    if (!details) return toast("Please enter your address");
+    if (!details) return toast("Please enter your address", "warning");
     state.address.details = details;
     state.address.instructions = instructions;
-    save(); closeModal(); toast("Saved ✅"); render();
+    save(); closeModal(); toast("Address saved", "success"); render();
   }
 
   function openAuth() {
-    document.getElementById("modalRoot").innerHTML = `<div class="overlay" onclick="if(event.target===this)closeModal()"><div class="sheet"><h3>Login to SwatGo</h3><div id="authStep1"><p style="font-size:13px;color:var(--text-light);margin-bottom:12px;">Enter your phone number.</p><input id="aPhone" placeholder="+92 300 1234567" type="tel" /><button class="checkout-btn" style="background:var(--primary);" onclick="checkAndLogin()">Continue</button></div><div id="authStep2" class="hidden"><p style="text-align:center;margin-bottom:16px;">👋 Welcome!</p><input id="aName" placeholder="Full Name" /><input id="aEmail" placeholder="Email (optional)" type="email" /><button class="checkout-btn" style="background:var(--success);" onclick="completeSignup()">Create Account</button><button class="add-btn" style="width:100%;margin-top:10px;background:var(--bg);color:var(--text)" onclick="backToStep1()">← Change</button></div><button class="add-btn" style="width:100%;margin-top:10px;background:var(--bg);color:var(--text)" onclick="closeModal()">Cancel</button></div></div>`;
+    document.getElementById("modalRoot").innerHTML = `<div class="overlay" onclick="if(event.target===this)closeModal()"><div class="sheet"><h3>Login to SwatGo</h3><div id="authStep1"><p style="font-size:13px;color:var(--text-light);margin-bottom:14px;font-weight:500;">Enter your phone number to continue</p><input id="aPhone" placeholder="+92 300 1234567" type="tel" /><button class="checkout-btn" onclick="checkAndLogin()">Continue</button></div><div id="authStep2" class="hidden"><p style="text-align:center;margin-bottom:16px;font-weight:600;">👋 Welcome!</p><input id="aName" placeholder="Full Name" /><input id="aEmail" placeholder="Email (optional)" type="email" /><button class="checkout-btn" onclick="completeSignup()">Create Account</button><button class="add-btn" style="width:100%;margin-top:10px;background:var(--bg);color:var(--text);box-shadow:none;border:1px solid var(--border);" onclick="backToStep1()">← Change Phone</button></div><button class="add-btn" style="width:100%;margin-top:10px;background:var(--bg);color:var(--text);box-shadow:none;border:1px solid var(--border);" onclick="closeModal()">Cancel</button></div></div>`;
     setTimeout(() => document.getElementById('aPhone')?.focus(), 100);
   }
 
   async function checkAndLogin() {
-    const input = document.getElementById('aPhone').value.trim(); if (!input) return toast("Enter phone");
+    const input = document.getElementById('aPhone').value.trim(); if (!input) return toast("Enter phone number", "warning");
     let phone = input.replace(/[\s\-()]/g, "");
     if (phone.startsWith("0")) phone = "+92" + phone.slice(1);
     else if (phone.startsWith("92") && !phone.startsWith("+")) phone = "+" + phone;
     else if (!phone.startsWith("+")) phone = "+92" + phone;
-    window._phone = phone; toast("Checking...");
+    window._phone = phone; toast("Checking...", "info");
     try {
       const snap = await getDoc(doc(db, "users", phone));
       if (snap.exists()) {
@@ -694,13 +726,13 @@ body.dark .dark-toggle { background: var(--accent); }
         state.address = data.address || { label: "Home", details: "", instructions: "", lat: null, lng: null };
         state.favorites = data.favorites || []; state.location = data.location || "Swat, Pakistan";
         saveLocal(); closeModal(); render();
-        toast("Welcome back, " + state.user.name + "! 🎉");
+        toast("Welcome back, " + state.user.name, "success");
         requestFcmToken();
       } else {
         document.getElementById('authStep1').classList.add('hidden');
         document.getElementById('authStep2').classList.remove('hidden');
       }
-    } catch (e) { console.error(e); toast("Network error"); }
+    } catch (e) { console.error(e); toast("Network error", "error"); }
   }
 
   function backToStep1() { document.getElementById('authStep2').classList.add('hidden'); document.getElementById('authStep1').classList.remove('hidden'); }
@@ -708,10 +740,10 @@ body.dark .dark-toggle { background: var(--accent); }
   async function completeSignup() {
     const name = document.getElementById('aName').value.trim();
     const email = document.getElementById('aEmail').value.trim();
-    if (!name) return toast("Enter name");
+    if (!name) return toast("Enter your name", "warning");
     state.user = { name, phone: window._phone, email, createdAt: new Date().toISOString() };
     saveLocal(); await saveToFirebase(); closeModal(); render();
-    toast("Welcome, " + name + " 🎉");
+    toast("Welcome, " + name, "success");
     requestFcmToken();
   }
 
@@ -721,43 +753,47 @@ body.dark .dark-toggle { background: var(--accent); }
     state.user = null; state.cart = []; state.orders = []; state.favorites = [];
     state.address = { label: "Home", details: "", instructions: "", lat: null, lng: null };
     state.coupon = null;
-    localStorage.clear(); state.tab = "home"; render(); toast("Logged out");
+    localStorage.clear(); state.tab = "home"; render(); toast("Logged out", "info");
   }
 
   function renderOrders() {
-    if (!state.orders.length) return '<div class="empty"><span class="big">📦</span>No orders yet</div>';
-    return `<h2>My Orders</h2>${state.orders.map(o => {
+    if (!state.orders.length) return `<h2>📦 My Orders</h2><div class="empty">${emptyOrdersSVG()}<h3>No orders yet</h3><p>Your order history will appear here</p><button class="checkout-btn" style="max-width:200px;margin:0 auto;" onclick="state.tab='home';render()">Start Ordering</button></div>`;
+    return `<h2>📦 My Orders</h2>${state.orders.map(o => {
       const canCancel = ["Placed", "Accepted by Store", "Ready for Pickup"].includes(o.status);
       const isCancelled = ["Cancelled", "Rejected"].includes(o.status);
       const isDelivered = o.status === "Delivered";
       const hasRider = o.rider && o.rider.phone;
-      return `<div class="card" style="${isCancelled ? 'opacity:0.7;' : ''}">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><b>#${o.id}</b><span class="status-chip ${o.status==='Placed'?'pending':''} ${isDelivered?'delivered':''} ${o.status==='Rider Assigned'?'assigned':''} ${isCancelled?'cancelled':''}">${o.status}</span></div>
-        <p style="font-size:12px;color:var(--text-light);margin-bottom:8px">${new Date(o.createdAt).toLocaleString()}</p>
-        ${o.items.map(i => `<div style="font-size:13px;display:flex;justify-content:space-between;padding:3px 0"><span>${i.name} × ${i.qty}</span><span>Rs ${i.price*i.qty}</span></div>`).join("")}
-        <div style="border-top:1px solid var(--border);margin-top:8px;padding-top:8px;font-size:13px;"><div style="display:flex;justify-content:space-between;font-weight:bold;"><span>Total</span><span>Rs ${o.total}</span></div></div>
-        ${hasRider ? `<div style="margin-top:8px;font-size:12px;color:var(--success);font-weight:600;">🛵 Rider: ${o.rider.name}</div>` : ''}
+      return `<div class="card" style="${isCancelled ? 'opacity:0.65;' : ''}">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><b style="font-weight:800;">#${o.id}</b><span class="status-chip ${o.status==='Placed'?'pending':''} ${isDelivered?'delivered':''} ${o.status==='Rider Assigned'?'assigned':''} ${isCancelled?'cancelled':''}">${o.status}</span></div>
+        <p style="font-size:11px;color:var(--text-light);margin-bottom:10px;font-weight:500;">${new Date(o.createdAt).toLocaleString()}</p>
+        ${o.items.map(i => `<div style="font-size:13px;display:flex;justify-content:space-between;padding:3px 0;font-weight:500;"><span>${i.name} × ${i.qty}</span><span style="font-feature-settings:'tnum';">Rs ${i.price*i.qty}</span></div>`).join("")}
+        <div style="border-top:1px solid var(--border);margin-top:8px;padding-top:10px;font-size:14px;"><div style="display:flex;justify-content:space-between;font-weight:800;"><span>Total</span><span style="color:var(--brand);font-feature-settings:'tnum';">Rs ${o.total}</span></div></div>
+        ${hasRider ? `<div style="margin-top:8px;font-size:12px;color:var(--brand);font-weight:700;">🛵 Rider: ${o.rider.name}</div>` : ''}
         <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
-          ${!isCancelled ? `<button class="add-btn" style="flex:1;background:var(--primary);color:#fff;" onclick="openTracking('${o.id}')">📍 Track</button>` : ''}
-          ${!isCancelled ? `<button class="add-btn" style="flex:1;background:#25D366;color:#fff;" onclick="chatWithMerchant('${o.id}')">💬 WhatsApp Store</button>` : ''}
-          ${!isCancelled && !isDelivered && hasRider ? `<button class="add-btn" style="flex:1;background:#f59e0b;color:#fff;" onclick="contactRiderFromOrder('${o.id}')">📞 Rider</button>` : ''}
-          ${isDelivered && !o.rated ? `<button class="add-btn" style="flex:1;background:var(--accent);color:#fff;" onclick="openRating('${o.id}')">⭐ Rate</button>` : ''}
-          ${isDelivered && o.rated ? `<button class="add-btn" style="flex:1;background:#dcfce7;color:#166534;">✅ Rated</button>` : ''}
-          <button class="add-btn" style="flex:1;background:var(--bg);color:var(--text);" onclick="reorder('${o.id}')">🔄 Reorder</button>
+          ${!isCancelled ? `<button class="add-btn" style="flex:1;" onclick="openTracking('${o.id}')">📍 Track</button>` : ''}
+          ${!isCancelled ? `<button class="add-btn" style="flex:1;background:linear-gradient(135deg,#25D366,#128C7E);box-shadow:0 4px 12px rgba(37,211,102,0.25);" onclick="chatWithMerchant('${o.id}')">💬 Store</button>` : ''}
+          ${!isCancelled && !isDelivered && hasRider ? `<button class="add-btn" style="flex:1;background:linear-gradient(135deg,#F59E0B,#D97706);box-shadow:0 4px 12px rgba(245,158,11,0.25);" onclick="contactRiderFromOrder('${o.id}')">📞 Rider</button>` : ''}
+          ${isDelivered && !o.rated ? `<button class="add-btn" style="flex:1;background:linear-gradient(135deg,#F59E0B,#D97706);box-shadow:0 4px 12px rgba(245,158,11,0.25);" onclick="openRating('${o.id}')">⭐ Rate</button>` : ''}
+          ${isDelivered && o.rated ? `<button class="add-btn" style="flex:1;background:var(--brand-light);color:var(--brand-dark);box-shadow:none;">✅ Rated</button>` : ''}
+          <button class="add-btn" style="flex:1;background:var(--bg);color:var(--text);box-shadow:none;border:1px solid var(--border);" onclick="reorder('${o.id}')">🔄 Reorder</button>
         </div>
-        ${canCancel ? `<button class="add-btn" style="width:100%;margin-top:8px;background:var(--danger);color:#fff;padding:10px;" onclick="cancelOrder('${o.id}')">❌ Cancel</button>` : ''}
-        ${!canCancel && !isCancelled && !isDelivered ? `<p style="font-size:11px;color:var(--text-light);text-align:center;margin-top:8px;">⚠️ Rider assigned — cancellation not available</p>` : ''}
+        ${canCancel ? `<button class="add-btn" style="width:100%;margin-top:10px;background:linear-gradient(135deg,#EF4444,#DC2626);box-shadow:0 4px 12px rgba(239,68,68,0.25);padding:11px;" onclick="cancelOrder('${o.id}')">❌ Cancel Order</button>` : ''}
+        ${!canCancel && !isCancelled && !isDelivered ? `<p style="font-size:11px;color:var(--text-light);text-align:center;margin-top:10px;font-weight:600;">⚠️ Rider assigned — cancellation not available</p>` : ''}
       </div>`;
     }).join("")}`;
   }
 
-  function reorder(orderId) { const o = state.orders.find(x => x.id === orderId); if(!o) return; o.items.forEach(item => { const ex = state.cart.find(i => String(i.id) === String(item.id)); if(ex) ex.qty += item.qty; else state.cart.push({...item}); }); save(); updateBadge(); toast("Added to cart!"); state.tab = "cart"; render(); }
+  function reorder(orderId) { const o = state.orders.find(x => x.id === orderId); if(!o) return; o.items.forEach(item => { const ex = state.cart.find(i => String(i.id) === String(item.id)); if(ex) ex.qty += item.qty; else state.cart.push({...item}); }); save(); updateBadge(); toast("Items added to cart", "success"); state.tab = "cart"; render(); }
 
   function renderProfile() {
-    if (!state.user) return `<div class="card" style="text-align:center;padding:40px 20px;"><div style="font-size:64px;margin-bottom:16px;">👤</div><h3 style="margin-bottom:8px;">Welcome to SwatGo</h3><p style="color:var(--text-light);font-size:13px;margin-bottom:20px;">Login with your phone</p><button class="checkout-btn" style="background:var(--primary);" onclick="openAuth()">Login / Signup</button></div>`;
-    return `<div class="card"><div style="display:flex;align-items:center;gap:16px"><div style="width:60px;height:60px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;">👤</div><div><h3>${state.user.name}</h3><p style="font-size:13px;color:var(--text-light)">${state.user.phone}</p></div></div></div>
-    <div class="card"><div style="display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border);font-size:14px;cursor:pointer;" onclick="openLocationModal()"><span>📍 Address</span><span style="color:var(--text-light);font-size:12px">${state.address.details ? state.address.details.slice(0,20)+'...' : 'Not set'}</span></div><div style="display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border);font-size:14px;cursor:pointer;" onclick="state.tab='orders';render()"><span>📦 My Orders</span><span>›</span></div><div style="display:flex;justify-content:space-between;padding:14px 0;font-size:14px;cursor:pointer;" onclick="toast('Support ticket created')"><span>🎧 Help & Support</span><span>›</span></div></div>
-    <button class="checkout-btn" style="background:var(--danger)" onclick="logout()">Logout</button>`;
+    if (!state.user) return `<div class="card" style="text-align:center;padding:40px 20px;"><div style="font-size:64px;margin-bottom:16px;">👤</div><h3 style="margin-bottom:8px;font-size:18px;">Welcome to SwatGo</h3><p style="color:var(--text-light);font-size:13px;margin-bottom:20px;">Login to place orders and track deliveries</p><button class="checkout-btn" style="max-width:240px;margin:0 auto;" onclick="openAuth()">Login / Sign Up</button></div>`;
+    return `<div class="card"><div style="display:flex;align-items:center;gap:16px"><div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg, #059669, #047857);color:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;">${(state.user.name || 'U')[0].toUpperCase()}</div><div><h3 style="font-size:17px;">${state.user.name}</h3><p style="font-size:13px;color:var(--text-light);font-weight:500;">${state.user.phone}</p></div></div></div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border);font-size:14px;cursor:pointer;" onclick="openLocationModal()"><span style="font-weight:600;">📍 Delivery Address</span><span style="color:var(--text-light);font-size:12px;font-weight:500;">${state.address.details ? state.address.details.slice(0,20)+'...' : 'Not set'}</span></div>
+      <div style="display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border);font-size:14px;cursor:pointer;" onclick="state.tab='orders';render()"><span style="font-weight:600;">📦 My Orders</span><span style="color:var(--text-light);">›</span></div>
+      <div style="display:flex;justify-content:space-between;padding:14px 0;font-size:14px;cursor:pointer;" onclick="toast('Support ticket created', 'info')"><span style="font-weight:600;">🎧 Help & Support</span><span style="color:var(--text-light);">›</span></div>
+    </div>
+    <button class="checkout-btn" style="background:linear-gradient(135deg,#EF4444,#DC2626);box-shadow:0 6px 20px rgba(239,68,68,0.3);" onclick="logout()">Logout</button>`;
   }
 
   function render() {
@@ -775,7 +811,7 @@ body.dark .dark-toggle { background: var(--accent); }
 
   document.querySelectorAll(".bottom-nav button").forEach(btn => { btn.addEventListener("click", () => { state.tab = btn.dataset.tab; state.currentShop = null; render(); window.scrollTo(0, 0); }); });
 
-  function applyCoupon() { const code = prompt("Enter coupon:\nSWAT10, WELCOME50, FREESHIP"); if (!code) return; const c = code.trim().toUpperCase(); if (COUPONS[c]) { state.coupon = c; save(); render(); toast("Applied: " + c); } else toast("Invalid coupon"); }
+  function applyCoupon() { const code = prompt("Enter coupon code:\nSWAT10, WELCOME50, FREESHIP"); if (!code) return; const c = code.trim().toUpperCase(); if (COUPONS[c]) { state.coupon = c; save(); render(); toast("Coupon applied: " + c, "success"); } else toast("Invalid coupon code", "error"); }
 
   setTimeout(() => { document.getElementById('splash').style.opacity = '0'; setTimeout(() => document.getElementById('splash')?.remove(), 500); }, 2000);
   document.getElementById("locLabel").textContent = state.location;
