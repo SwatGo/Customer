@@ -151,13 +151,13 @@ body.dark .dark-toggle { background: var(--accent); }
   const analytics = getAnalytics(app);
   const db = getFirestore(app);
 
-  const DEFAULT_SETTINGS = { PLATFORM_FEE: 30, DEFAULT_DELIVERY: 150, RIDER_CUT: 120, COMMISSION_RATE: 10, featuredMerchants: [] };
+  const DEFAULT_SETTINGS = { PLATFORM_FEE: 30, DEFAULT_DELIVERY: 150, RIDER_CUT: 120, COMMISSION_RATE: 10, RATE_PER_KM: 40, MIN_DELIVERY_FEE: 50, MAX_DELIVERY_FEE: 500, featuredMerchants: [] };
   const DEFAULT_CENTER = { lat: 34.7717, lng: 72.3600 };
 
   const DEMO_SHOPS = [
-    { id: 1, name: "Al-Madina Superstore", category: "Supermarket", rating: 4.5, time: "20-30 min", distance: "1.2 km", emoji: "🛒", featured: true, hours: "8:00 AM - 11:00 PM", banner: "linear-gradient(135deg, #10b981, #047857)", isDemo: true, products: [ { id: 101, name: "Milk 1L", price: 220, desc: "Fresh full cream milk", stock: true }, { id: 102, name: "Eggs (12)", price: 180, desc: "Farm fresh eggs", stock: true }, { id: 103, name: "Bread", price: 120, desc: "Whole wheat bread", stock: true } ] },
-    { id: 2, name: "KFC Swat", category: "Restaurant", rating: 4.2, time: "30-40 min", distance: "2.5 km", emoji: "🍗", featured: true, hours: "11:00 AM - 1:00 AM", banner: "linear-gradient(135deg, #ef4444, #b91c1c)", isDemo: true, products: [ { id: 201, name: "Zinger Burger", price: 550, desc: "Crispy chicken burger", stock: true }, { id: 202, name: "Chicken Pieces (4)", price: 700, desc: "Hot & crispy", stock: true }, { id: 203, name: "Fries Large", price: 250, desc: "Golden fries", stock: true } ] },
-    { id: 3, name: "Green Pharmacy", category: "Pharmacy", rating: 4.7, time: "15-25 min", distance: "0.8 km", emoji: "💊", featured: false, hours: "24 Hours", banner: "linear-gradient(135deg, #3b82f6, #1d4ed8)", isDemo: true, products: [ { id: 301, name: "Panadol (10)", price: 50, desc: "Pain relief", stock: true }, { id: 302, name: "Vitamin C", price: 300, desc: "Immunity booster", stock: true } ] }
+    { id: 1, name: "Al-Madina Superstore", category: "Supermarket", rating: 4.5, time: "20-30 min", distance: "1.2 km", emoji: "🛒", featured: true, hours: "8:00 AM - 11:00 PM", banner: "linear-gradient(135deg, #10b981, #047857)", isDemo: true, address: "Mingora Bazar, Swat", location: { lat: 34.7717, lng: 72.3600 }, merchantPhone: "", products: [ { id: 101, name: "Milk 1L", price: 220, desc: "Fresh full cream milk", stock: true }, { id: 102, name: "Eggs (12)", price: 180, desc: "Farm fresh eggs", stock: true }, { id: 103, name: "Bread", price: 120, desc: "Whole wheat bread", stock: true } ] },
+    { id: 2, name: "KFC Swat", category: "Restaurant", rating: 4.2, time: "30-40 min", distance: "2.5 km", emoji: "🍗", featured: true, hours: "11:00 AM - 1:00 AM", banner: "linear-gradient(135deg, #ef4444, #b91c1c)", isDemo: true, address: "Saidu Sharif Road, Swat", location: { lat: 34.7817, lng: 72.3700 }, merchantPhone: "", products: [ { id: 201, name: "Zinger Burger", price: 550, desc: "Crispy chicken burger", stock: true }, { id: 202, name: "Chicken Pieces (4)", price: 700, desc: "Hot & crispy", stock: true }, { id: 203, name: "Fries Large", price: 250, desc: "Golden fries", stock: true } ] },
+    { id: 3, name: "Green Pharmacy", category: "Pharmacy", rating: 4.7, time: "15-25 min", distance: "0.8 km", emoji: "💊", featured: false, hours: "24 Hours", banner: "linear-gradient(135deg, #3b82f6, #1d4ed8)", isDemo: true, address: "Green Chowk, Mingora", location: { lat: 34.7750, lng: 72.3630 }, merchantPhone: "", products: [ { id: 301, name: "Panadol (10)", price: 50, desc: "Pain relief", stock: true }, { id: 302, name: "Vitamin C", price: 300, desc: "Immunity booster", stock: true } ] }
   ];
 
   const CATEGORY_META = {
@@ -202,7 +202,7 @@ body.dark .dark-toggle { background: var(--accent); }
     const products = (data.products || []).map(p => ({ id: p.id, name: p.name, price: p.price, desc: p.desc || "", stock: p.stock !== false, category: p.category || "General" }));
     const featuredList = state.settings.featuredMerchants || [];
     const isFeatured = featuredList.includes(m.phone || docId);
-    return { id: phoneToShopId(m.phone || docId), name: m.storeName || "Store", category: m.category || "Other", rating: 5.0, time: "20-30 min", distance: "Nearby", emoji: meta.emoji, banner: meta.banner, featured: isFeatured, isNew: true, isDemo: false, hours: m.hours || "Open", address: m.address || "", deliveryArea: m.deliveryArea || "", merchantPhone: m.phone || docId, products };
+    return { id: phoneToShopId(m.phone || docId), name: m.storeName || "Store", category: m.category || "Other", rating: 5.0, time: "20-30 min", distance: "Nearby", emoji: meta.emoji, banner: meta.banner, featured: isFeatured, isNew: true, isDemo: false, hours: m.hours || "Open", address: m.address || "", location: m.location || null, deliveryArea: m.deliveryArea || "", merchantPhone: m.phone || docId, products };
   }
 
   function getAllShops() { return [...state.firebaseShops, ...DEMO_SHOPS]; }
@@ -228,7 +228,7 @@ body.dark .dark-toggle { background: var(--accent); }
       if (snap.exists()) {
         state.settings = { ...DEFAULT_SETTINGS, ...snap.data() };
         state.firebaseShops = state.firebaseShops.map(s => ({ ...s, featured: (state.settings.featuredMerchants || []).includes(s.merchantPhone) }));
-        if (state.tab === "home") render();
+        if (state.tab === "home" || state.tab === "cart") render();
       }
     }, (err) => { console.error("Settings error:", err); });
   }
@@ -296,7 +296,51 @@ body.dark .dark-toggle { background: var(--accent); }
   function findProduct(id) { for (const s of getAllShops()) { const p = s.products.find(x => String(x.id) === String(id)); if (p) return { ...p, shopId: s.id, shopName: s.name }; } return null; }
   function cartCount() { return state.cart.reduce((a, b) => a + b.qty, 0); }
   function cartSubtotal() { return state.cart.reduce((a, b) => a + b.price * b.qty, 0); }
-  function deliveryFee() { return state.cart.length ? state.settings.DEFAULT_DELIVERY : 0; }
+
+  // ============================================
+  // DISTANCE-BASED DELIVERY FEE
+  // ============================================
+  function calculateDistanceKm(lat1, lng1, lat2, lng2) {
+    const R = 6371;
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLng = (lng2 - lng1) * Math.PI / 180;
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+              Math.sin(dLng / 2) * Math.sin(dLng / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  }
+
+  function deliveryFee() {
+    if (!state.cart.length) return 0;
+    const ratePerKm = state.settings.RATE_PER_KM || 40;
+    const minFee = state.settings.MIN_DELIVERY_FEE || 50;
+    const maxFee = state.settings.MAX_DELIVERY_FEE || 500;
+    const customerLat = state.address.lat;
+    const customerLng = state.address.lng;
+    if (!customerLat || !customerLng) return minFee;
+    const shopNames = [...new Set(state.cart.map(i => i.shopName).filter(Boolean))];
+    const firstShop = findShopByName(shopNames[0]);
+    if (!firstShop || !firstShop.location || !firstShop.location.lat) return state.settings.DEFAULT_DELIVERY || 150;
+    const straightKm = calculateDistanceKm(firstShop.location.lat, firstShop.location.lng, customerLat, customerLng);
+    const roadKm = straightKm * 1.3;
+    let fee = Math.round(roadKm * ratePerKm);
+    fee = Math.max(minFee, Math.min(maxFee, fee));
+    console.log(`📏 Distance: ${straightKm.toFixed(2)} km → ${roadKm.toFixed(2)} km road | Fee: Rs ${fee}`);
+    return fee;
+  }
+
+  function getDistanceText() {
+    if (!state.cart.length) return '';
+    const customerLat = state.address.lat, customerLng = state.address.lng;
+    if (!customerLat || !customerLng) return '';
+    const shopNames = [...new Set(state.cart.map(i => i.shopName).filter(Boolean))];
+    const firstShop = findShopByName(shopNames[0]);
+    if (!firstShop || !firstShop.location || !firstShop.location.lat) return '';
+    const km = calculateDistanceKm(firstShop.location.lat, firstShop.location.lng, customerLat, customerLng) * 1.3;
+    return `(${km.toFixed(1)} km)`;
+  }
+
   function platformFee() { return state.cart.length ? state.settings.PLATFORM_FEE : 0; }
   function discountAmount() { if (!state.coupon) return 0; const c = COUPONS[state.coupon]; if (!c) return 0; const sub = cartSubtotal(); if (sub < c.min) return 0; if (c.type === "percent") return Math.round(sub * c.value / 100); if (c.type === "flat") return c.value; if (c.type === "shipping") return deliveryFee(); return 0; }
   function cartTotal() { return Math.max(0, cartSubtotal() + deliveryFee() + platformFee() - discountAmount()); }
@@ -393,14 +437,16 @@ body.dark .dark-toggle { background: var(--accent); }
   function renderCart() {
     if (!state.cart.length) return '<div class="empty"><span class="big">🛒</span>Your cart is empty</div>';
     const sub = cartSubtotal(), df = deliveryFee(), pf = platformFee(), disc = discountAmount(), total = cartTotal();
-    return `<h2>Your Cart</h2><div class="card">${state.cart.map(i => `<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);"><div><h4 style="font-size:14px">${i.name}</h4><p style="font-size:12px;color:var(--text-light)">${i.shopName} • Rs ${i.price}</p></div><div class="qty-box"><button onclick="changeQty(${i.id},-1)">−</button><span>${i.qty}</span><button onclick="changeQty(${i.id},1)">+</button></div></div>`).join("")}</div><div class="card"><div class="fee-row"><span>Subtotal</span><span>Rs ${sub}</span></div><div class="fee-row"><span>Delivery</span><span>Rs ${df}</span></div><div class="fee-row"><span>Platform Fee</span><span>Rs ${pf}</span></div>${disc>0?`<div class="fee-row" style="color:var(--success)"><span>Discount</span><span>-Rs ${disc}</span></div>`:""}<div class="fee-row total"><span>Total</span><span>Rs ${total}</span></div></div><div class="card" style="display:flex;justify-content:space-between;align-items:center"><div style="font-size:14px">🎟️ ${state.coupon ? "Coupon: <b>"+state.coupon+"</b>" : "Coupon?"}</div>${state.coupon ? `<button class="add-btn" style="background:var(--danger)" onclick="state.coupon=null;save();render()">Remove</button>` : `<button class="add-btn" onclick="applyCoupon()">Apply</button>`}</div><button class="checkout-btn" onclick="openCheckout()">Proceed to Checkout</button>`;
+    const distText = getDistanceText();
+    return `<h2>Your Cart</h2><div class="card">${state.cart.map(i => `<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);"><div><h4 style="font-size:14px">${i.name}</h4><p style="font-size:12px;color:var(--text-light)">${i.shopName} • Rs ${i.price}</p></div><div class="qty-box"><button onclick="changeQty(${i.id},-1)">−</button><span>${i.qty}</span><button onclick="changeQty(${i.id},1)">+</button></div></div>`).join("")}</div><div class="card"><div class="fee-row"><span>Subtotal</span><span>Rs ${sub}</span></div><div class="fee-row"><span>Delivery ${distText}</span><span>Rs ${df}</span></div><div class="fee-row"><span>Platform Fee</span><span>Rs ${pf}</span></div>${disc>0?`<div class="fee-row" style="color:var(--success)"><span>Discount</span><span>-Rs ${disc}</span></div>`:""}<div class="fee-row total"><span>Total</span><span>Rs ${total}</span></div></div><div class="card" style="display:flex;justify-content:space-between;align-items:center"><div style="font-size:14px">🎟️ ${state.coupon ? "Coupon: <b>"+state.coupon+"</b>" : "Coupon?"}</div>${state.coupon ? `<button class="add-btn" style="background:var(--danger)" onclick="state.coupon=null;save();render()">Remove</button>` : `<button class="add-btn" onclick="applyCoupon()">Apply</button>`}</div><button class="checkout-btn" onclick="openCheckout()">Proceed to Checkout</button>`;
   }
 
   function openCheckout() {
     if (state.cart.length === 0) return toast("Cart is empty");
     if (!state.user) { toast("Please login first"); state.tab = "profile"; render(); return; }
     const sub = cartSubtotal(), df = deliveryFee(), pf = platformFee(), disc = discountAmount(), total = cartTotal();
-    document.getElementById("modalRoot").innerHTML = `<div class="overlay" onclick="if(event.target===this)closeModal()"><div class="sheet"><h3>Confirm Order</h3><div style="background:var(--bg);border-radius:14px;padding:16px;margin-bottom:16px;border:1px solid var(--border);cursor:pointer;" onclick="openLocationModal()"><div style="display:flex;justify-content:space-between;align-items:center;"><div><b>📍 ${state.address.label || 'Delivery Address'}</b><br><span style="font-size:13px;color:var(--text-light)">${state.address.details || 'Tap to set address'}</span></div><span style="font-size:20px;">›</span></div></div><div style="font-size:14px;color:var(--text-light);margin-bottom:8px;">Delivery / Pickup</div><div class="pay-opt active" id="optDelivery"><input type="radio" name="mode" value="delivery" checked onchange="updateMode()" /><div><b>Delivery</b><div style="font-size:12px;color:var(--text-light)">Rs ${df}</div></div></div><div class="pay-opt" id="optPickup"><input type="radio" name="mode" value="pickup" onchange="updateMode()" /><div><b>Pickup</b><div style="font-size:12px;color:var(--text-light)">Free</div></div></div><div style="font-size:14px;color:var(--text-light);margin:16px 0 8px;">Payment Method</div><div class="pay-opt active" id="payCOD"><input type="radio" name="pay" value="cod" checked /><div class="pay-icon">💵</div><div><b>Cash on Delivery</b><div style="font-size:11px;color:var(--text-light);">Online payment coming soon</div></div></div><div class="fee-breakdown"><div class="fee-row"><span>Subtotal</span><span>Rs ${sub}</span></div><div class="fee-row"><span>Delivery</span><span id="dfLabel">Rs ${df}</span></div><div class="fee-row"><span>Platform Fee</span><span>Rs ${pf}</span></div>${disc > 0 ? `<div class="fee-row" style="color:var(--success)"><span>Discount</span><span>-Rs ${disc}</span></div>` : ""}<div class="fee-row total"><span>Total</span><span id="totalLabel">Rs ${total}</span></div></div><button class="checkout-btn" style="background:var(--success);margin-top:20px;" onclick="placeOrder()">Place Order</button><button class="add-btn" style="width:100%;margin-top:10px;background:var(--bg);color:var(--text)" onclick="closeModal()">Cancel</button></div></div>`;
+    const distText = getDistanceText();
+    document.getElementById("modalRoot").innerHTML = `<div class="overlay" onclick="if(event.target===this)closeModal()"><div class="sheet"><h3>Confirm Order</h3><div style="background:var(--bg);border-radius:14px;padding:16px;margin-bottom:16px;border:1px solid var(--border);cursor:pointer;" onclick="openLocationModal()"><div style="display:flex;justify-content:space-between;align-items:center;"><div><b>📍 ${state.address.label || 'Delivery Address'}</b><br><span style="font-size:13px;color:var(--text-light)">${state.address.details || 'Tap to set address'}</span></div><span style="font-size:20px;">›</span></div></div><div style="font-size:14px;color:var(--text-light);margin-bottom:8px;">Delivery / Pickup</div><div class="pay-opt active" id="optDelivery"><input type="radio" name="mode" value="delivery" checked onchange="updateMode()" /><div><b>Delivery</b><div style="font-size:12px;color:var(--text-light)">Rs ${df} ${distText}</div></div></div><div class="pay-opt" id="optPickup"><input type="radio" name="mode" value="pickup" onchange="updateMode()" /><div><b>Pickup</b><div style="font-size:12px;color:var(--text-light)">Free</div></div></div><div style="font-size:14px;color:var(--text-light);margin:16px 0 8px;">Payment Method</div><div class="pay-opt active" id="payCOD"><input type="radio" name="pay" value="cod" checked /><div class="pay-icon">💵</div><div><b>Cash on Delivery</b><div style="font-size:11px;color:var(--text-light);">Online payment coming soon</div></div></div><div class="fee-breakdown"><div class="fee-row"><span>Subtotal</span><span>Rs ${sub}</span></div><div class="fee-row"><span>Delivery ${distText}</span><span id="dfLabel">Rs ${df}</span></div><div class="fee-row"><span>Platform Fee</span><span>Rs ${pf}</span></div>${disc > 0 ? `<div class="fee-row" style="color:var(--success)"><span>Discount</span><span>-Rs ${disc}</span></div>` : ""}<div class="fee-row total"><span>Total</span><span id="totalLabel">Rs ${total}</span></div></div><button class="checkout-btn" style="background:var(--success);margin-top:20px;" onclick="placeOrder()">Place Order</button><button class="add-btn" style="width:100%;margin-top:10px;background:var(--bg);color:var(--text)" onclick="closeModal()">Cancel</button></div></div>`;
     window._mode = "delivery"; window._pay = "cod";
   }
 
@@ -428,29 +474,15 @@ body.dark .dark-toggle { background: var(--accent); }
     const pickup = firstShop ? {
       name: firstShop.name,
       address: firstShop.address || '',
-      phone: firstShop.merchantPhone || ''
-    } : { name: shopNames[0] || 'Store', address: '', phone: '' };
+      phone: firstShop.merchantPhone || '',
+      location: firstShop.location || null
+    } : { name: shopNames[0] || 'Store', address: '', phone: '', location: null };
 
     const order = {
-      id: orderId,
-      userId: state.user.phone,
-      userName: state.user.name,
-      userPhone: state.user.phone,
-      items: [...state.cart],
-      subtotal: sub,
-      delivery: df,
-      platformFee: pf,
-      discount: disc,
-      total: total,
-      mode,
-      pay,
-      address: state.address,
-      pickup: pickup,
-      status: "Placed",
-      createdAt: new Date().toISOString(),
-      rider: null,
-      riderEarning: 0,
-      timeline: ["Placed"]
+      id: orderId, userId: state.user.phone, userName: state.user.name, userPhone: state.user.phone,
+      items: [...state.cart], subtotal: sub, delivery: df, platformFee: pf, discount: disc, total: total,
+      mode, pay, address: state.address, pickup: pickup, status: "Placed",
+      createdAt: new Date().toISOString(), rider: null, riderEarning: 0, timeline: ["Placed"]
     };
 
     state.orders.unshift(order);
@@ -458,16 +490,13 @@ body.dark .dark-toggle { background: var(--accent); }
     state.coupon = null;
     save(); updateBadge(); closeModal(); state.tab = "orders"; render();
     toast("Order placed! #" + orderId);
-
     try { await setDoc(doc(db, "orders", orderId), order); }
     catch (e) { console.error(e); toast("Cloud sync failed"); }
   }
 
   async function cancelOrder(orderId) {
     const o = state.orders.find(x => x.id === orderId); if (!o) return;
-    if (["Rider Assigned", "Picked Up", "On the Way", "Delivered"].includes(o.status)) {
-      return toast("Rider already assigned. Cannot cancel.");
-    }
+    if (["Rider Assigned", "Picked Up", "On the Way", "Delivered"].includes(o.status)) return toast("Rider already assigned. Cannot cancel.");
     if (!confirm("Cancel this order?")) return;
     try {
       await updateDoc(doc(db, "orders", orderId), { status: "Cancelled", cancelledAt: new Date().toISOString(), cancelledBy: "Customer" });
@@ -534,15 +563,7 @@ body.dark .dark-toggle { background: var(--accent); }
     const riderPhone = o.rider?.phone || "";
     const riderName = o.rider?.name || "";
     window._storeRating = 0; window._riderRating = 0;
-    document.getElementById("modalRoot").innerHTML = `<div class="overlay" onclick="if(event.target===this)closeModal()"><div class="sheet"><h3>⭐ Rate Your Order</h3>
-      <p style="font-size:13px;color:var(--text-light);margin-bottom:16px;">Order #${o.id}</p>
-      <div style="text-align:center;margin-bottom:8px;font-weight:600;">${shopName || "Store"}</div>
-      <div class="stars" id="storeStars">${[1,2,3,4,5].map(i => `<span class="star" onclick="setStar('store',${i})">★</span>`).join("")}</div>
-      ${riderName ? `<div style="text-align:center;margin:16px 0 8px;font-weight:600;">🛵 ${riderName}</div><div class="stars" id="riderStars">${[1,2,3,4,5].map(i => `<span class="star" onclick="setStar('rider',${i})">★</span>`).join("")}</div>` : ''}
-      <textarea id="reviewText" placeholder="Write your review (optional)..." rows="3" style="margin-top:16px;"></textarea>
-      <button class="checkout-btn" style="background:var(--accent);" onclick="submitRating('${orderId}', '${shopName.replace(/'/g,"\\'")}', '${riderPhone}')">Submit Rating</button>
-      <button class="add-btn" style="width:100%;margin-top:10px;background:var(--bg);color:var(--text)" onclick="closeModal()">Cancel</button>
-    </div></div>`;
+    document.getElementById("modalRoot").innerHTML = `<div class="overlay" onclick="if(event.target===this)closeModal()"><div class="sheet"><h3>⭐ Rate Your Order</h3><p style="font-size:13px;color:var(--text-light);margin-bottom:16px;">Order #${o.id}</p><div style="text-align:center;margin-bottom:8px;font-weight:600;">${shopName || "Store"}</div><div class="stars" id="storeStars">${[1,2,3,4,5].map(i => `<span class="star" onclick="setStar('store',${i})">★</span>`).join("")}</div>${riderName ? `<div style="text-align:center;margin:16px 0 8px;font-weight:600;">🛵 ${riderName}</div><div class="stars" id="riderStars">${[1,2,3,4,5].map(i => `<span class="star" onclick="setStar('rider',${i})">★</span>`).join("")}</div>` : ''}<textarea id="reviewText" placeholder="Write your review (optional)..." rows="3" style="margin-top:16px;"></textarea><button class="checkout-btn" style="background:var(--accent);" onclick="submitRating('${orderId}', '${shopName.replace(/'/g,"\\'")}', '${riderPhone}')">Submit Rating</button><button class="add-btn" style="width:100%;margin-top:10px;background:var(--bg);color:var(--text)" onclick="closeModal()">Cancel</button></div></div>`;
   }
 
   function setStar(type, val) {
@@ -555,12 +576,8 @@ body.dark .dark-toggle { background: var(--accent); }
     const reviewText = document.getElementById("reviewText")?.value.trim() || "";
     const o = state.orders.find(x => x.id === orderId); if (!o) return;
     try {
-      if (shopName && window._storeRating > 0) {
-        await setDoc(doc(db, "reviews", "rev_" + Date.now() + "_store"), { type: "store", storeName: shopName, orderId, customerPhone: state.user.phone, customerName: state.user.name, rating: window._storeRating, text: reviewText, createdAt: new Date().toISOString() });
-      }
-      if (riderPhone && window._riderRating > 0) {
-        await setDoc(doc(db, "reviews", "rev_" + Date.now() + "_rider"), { type: "rider", riderPhone, orderId, customerPhone: state.user.phone, customerName: state.user.name, rating: window._riderRating, text: reviewText, createdAt: new Date().toISOString() });
-      }
+      if (shopName && window._storeRating > 0) await setDoc(doc(db, "reviews", "rev_" + Date.now() + "_store"), { type: "store", storeName: shopName, orderId, customerPhone: state.user.phone, customerName: state.user.name, rating: window._storeRating, text: reviewText, createdAt: new Date().toISOString() });
+      if (riderPhone && window._riderRating > 0) await setDoc(doc(db, "reviews", "rev_" + Date.now() + "_rider"), { type: "rider", riderPhone, orderId, customerPhone: state.user.phone, customerName: state.user.name, rating: window._riderRating, text: reviewText, createdAt: new Date().toISOString() });
       await updateDoc(doc(db, "orders", orderId), { rated: true, ratedAt: new Date().toISOString() });
       o.rated = true; saveLocal(); closeModal(); toast("Thanks for your feedback! ⭐"); render();
     } catch (e) { console.error(e); toast("Failed to submit rating"); }
@@ -573,40 +590,33 @@ body.dark .dark-toggle { background: var(--accent); }
       const reviews = [];
       snap.forEach(d => reviews.push({ id: d.id, ...d.data() }));
       reviews.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-      const list = document.getElementById("reviewsList");
-      if (!list) return;
+      const list = document.getElementById("reviewsList"); if (!list) return;
       if (reviews.length === 0) { list.innerHTML = '<div class="empty"><span class="big">📭</span>No reviews yet</div>'; return; }
       const avg = (reviews.reduce((s, r) => s + (r.rating || 0), 0) / reviews.length).toFixed(1);
       list.innerHTML = `<div class="card" style="text-align:center;background:var(--bg);"><div style="font-size:32px;">⭐ ${avg}</div><p style="font-size:12px;">${reviews.length} review${reviews.length > 1 ? 's' : ''}</p></div>` + reviews.map(r => `<div class="review-item"><div class="review-header"><b style="font-size:13px;">${r.customerName || 'Customer'}</b><span class="review-stars">${"★".repeat(r.rating)}${"☆".repeat(5 - r.rating)}</span></div>${r.text ? `<p class="review-text">${r.text}</p>` : ''}<p class="review-meta">${new Date(r.createdAt).toLocaleDateString()}</p></div>`).join("");
     });
   }
 
-  // LOCATION (Text-first approach)
+  // LOCATION
   let pickerMap = null, pickerMarker = null;
 
   function openLocationModal() {
     document.getElementById("modalRoot").innerHTML = `<div class="overlay" onclick="if(event.target===this)closeModal()"><div class="sheet"><h3>📍 Delivery Address</h3>
-      
       <label style="display:block;font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px;">Enter your full address *</label>
       <textarea id="addrDetails" placeholder="e.g. Mingora Bazar, near Bank Alfalah, House 123" rows="3" style="width:100%;padding:12px;border:1px solid var(--border);border-radius:12px;font-size:14px;background:var(--input-bg);color:var(--text);font-family:inherit;resize:none;margin-bottom:12px;">${state.address.details || ''}</textarea>
-
       <button class="add-btn" onclick="goToMyLocation()" style="width:100%;margin-bottom:12px;background:#dbeafe;color:#1e40af;padding:12px;font-size:13px;">📍 Use My Current Location (Exact GPS)</button>
-
       <details style="margin-bottom:12px;">
         <summary style="cursor:pointer;font-size:12px;color:var(--text-light);padding:8px 0;">🎯 Adjust exact location on map (optional)</summary>
         <div id="pickerMap" style="width:100%;height:220px;border-radius:14px;margin-top:8px;background:var(--bg);"></div>
         <p style="font-size:11px;text-align:center;color:var(--text-light);margin-top:6px;">Drag pin or tap map for exact GPS location</p>
       </details>
-
       <div style="display:flex;gap:8px;margin-bottom:12px;">
         <div class="filter-chip ${state.address.label==='Home'?'active':''}" onclick="setAddressLabel('Home')">🏠 Home</div>
         <div class="filter-chip ${state.address.label==='Office'?'active':''}" onclick="setAddressLabel('Office')">🏢 Office</div>
         <div class="filter-chip ${state.address.label==='Other'?'active':''}" onclick="setAddressLabel('Other')">📍 Other</div>
       </div>
-
       <label style="display:block;font-size:12px;color:var(--text-light);margin-bottom:4px;">Delivery Instructions (optional)</label>
       <input id="addrInstructions" placeholder="Call before arriving, house color..." value="${state.address.instructions || ''}" />
-
       <button class="checkout-btn" style="background:var(--primary);margin-top:12px;" onclick="saveAddress()">Save Address</button>
       <button class="add-btn" style="width:100%;margin-top:10px;background:var(--bg);color:var(--text)" onclick="closeModal()">Cancel</button>
     </div></div>`;
@@ -621,29 +631,32 @@ body.dark .dark-toggle { background: var(--accent); }
     google.maps.event.addListener(pickerMarker, 'dragend', () => {
       const pos = pickerMarker.getPosition();
       state.address.lat = pos.lat(); state.address.lng = pos.lng();
+      new google.maps.Geocoder().geocode({ location: { lat: pos.lat(), lng: pos.lng() } }, (results, status) => {
+        const addrInput = document.getElementById('addrDetails');
+        if (status === "OK" && results[0] && results[0].formatted_address && addrInput && !addrInput.value) addrInput.value = results[0].formatted_address;
+      });
     });
     pickerMap.addListener('click', (e) => {
       pickerMarker.setPosition(e.latLng);
       state.address.lat = e.latLng.lat(); state.address.lng = e.latLng.lng();
+      new google.maps.Geocoder().geocode({ location: { lat: e.latLng.lat(), lng: e.latLng.lng() } }, (results, status) => {
+        const addrInput = document.getElementById('addrDetails');
+        if (status === "OK" && results[0] && results[0].formatted_address && addrInput && !addrInput.value) addrInput.value = results[0].formatted_address;
+      });
     });
   }
 
   function goToMyLocation() {
     if (!navigator.geolocation) return toast("GPS not supported");
-    const isSecure = location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1';
-    if (!isSecure) { alert("⚠️ Requires HTTPS"); return; }
     toast("Getting location...");
     navigator.geolocation.getCurrentPosition((pos) => {
       const lat = pos.coords.latitude, lng = pos.coords.longitude;
       state.address.lat = lat; state.address.lng = lng;
       if (pickerMap) { pickerMap.setCenter({ lat, lng }); pickerMap.setZoom(17); }
       if (pickerMarker) pickerMarker.setPosition({ lat, lng });
-      // Reverse geocode to fill the text box
       new google.maps.Geocoder().geocode({ location: { lat, lng } }, (results, status) => {
         const input = document.getElementById("addrDetails");
-        if (status === "OK" && results[0] && results[0].formatted_address && input) {
-          input.value = results[0].formatted_address;
-        }
+        if (status === "OK" && results[0] && results[0].formatted_address && input) input.value = results[0].formatted_address;
       });
       toast("Location detected ✅");
     }, (err) => { alert(err.code === 1 ? "🚫 Permission blocked." : "Error: " + err.message); }, { enableHighAccuracy: true, timeout: 15000 });
@@ -654,13 +667,12 @@ body.dark .dark-toggle { background: var(--accent); }
   function saveAddress() {
     const details = document.getElementById('addrDetails').value.trim();
     const instructions = document.getElementById('addrInstructions').value.trim();
-    if (!details || details === "Fetching address...") return toast("Please enter your address");
+    if (!details) return toast("Please enter your address");
     state.address.details = details;
     state.address.instructions = instructions;
     save(); closeModal(); toast("Saved ✅"); render();
   }
 
-  // AUTH
   function openAuth() {
     document.getElementById("modalRoot").innerHTML = `<div class="overlay" onclick="if(event.target===this)closeModal()"><div class="sheet"><h3>Login to SwatGo</h3><div id="authStep1"><p style="font-size:13px;color:var(--text-light);margin-bottom:12px;">Enter your phone number.</p><input id="aPhone" placeholder="+92 300 1234567" type="tel" /><button class="checkout-btn" style="background:var(--primary);" onclick="checkAndLogin()">Continue</button></div><div id="authStep2" class="hidden"><p style="text-align:center;margin-bottom:16px;">👋 Welcome!</p><input id="aName" placeholder="Full Name" /><input id="aEmail" placeholder="Email (optional)" type="email" /><button class="checkout-btn" style="background:var(--success);" onclick="completeSignup()">Create Account</button><button class="add-btn" style="width:100%;margin-top:10px;background:var(--bg);color:var(--text)" onclick="backToStep1()">← Change</button></div><button class="add-btn" style="width:100%;margin-top:10px;background:var(--bg);color:var(--text)" onclick="closeModal()">Cancel</button></div></div>`;
     setTimeout(() => document.getElementById('aPhone')?.focus(), 100);
